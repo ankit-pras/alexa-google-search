@@ -1,4 +1,4 @@
-# alexa-google
+# alexa-google-search
 A highly unofficial alexa skill for google search
 
 THIS SKILL IS FOR PERSONAL USE ONLY AND IS NOT ENDORSED BY GOOGLE - DO NOT SUBMIT THIS TO AMAZON FOR CERTIFICATION AS IT WON'T PASS!
