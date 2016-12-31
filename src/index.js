@@ -32,6 +32,10 @@ AlexaGoogleSearch.prototype.eventHandlers.onLaunch = function(launchRequest, ses
 AlexaGoogleSearch.prototype.intentHandlers = {
     "SearchIntent": function(intent, session, response) {
 		var query = intent.slots.search.value
+		
+		// Title for Alexa app card
+        var cardTitle = ("Google Search Result for: " + query)
+		
 		// Remove spaces and replace with +
 		query = query.replace(" ","+")
 		
@@ -41,8 +45,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 		
         var speechOutput = "Error"
         
-        // Title for Alexa app card
-        var cardTitle = ("Google Search Result for " + query)
+
 
         // Parsing routine modified from 
         // https://github.com/TheAdrianProject/AdrianSmartAssistant/blob/master/Modules/Google/Google.js        
