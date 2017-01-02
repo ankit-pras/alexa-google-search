@@ -62,6 +62,8 @@ AlexaGoogleSearch.prototype.intentHandlers = {
         rp(queryString)
             .then(function(body) {
             	console.log("Running parsing")
+                console.log("Search string is:" + queryString)
+                console.log("HTML is:" + $("#ires",body).html())
             	                
             // result variable init
 			var found = 0;
