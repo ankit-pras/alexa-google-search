@@ -54,7 +54,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
         
         // Create search sring
         var queryString = "http://www.google.com/search?q=" 
-			+'?hl=en-GB'      //  Search language - change to en-US for US based results
+			
 	        +'&oe=utf8'       //  Output encoding
 	        +'&q=' + query    // add search string
 
