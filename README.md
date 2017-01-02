@@ -31,7 +31,7 @@ To run the skill you need to do two things:-
 ### AWS Lambda Setup
 
 1. Go to http://aws.amazon.com/lambda/ . You will need to set-up an AWS account if you don't have one already. 
-2. Go to the AWS Console and click on the Lambda link. Note: ensure you are in US-East(N. Virginia) if you are based in the US or EU(Ireland) if you are based in the UK. This is important otherwise you won't be able to use Alexa with Lambda. 
+2. Go to the AWS Console and click on the Lambda link. Note: ensure you are in US-East(N. Virginia) if you are based in the US or EU(Ireland) if you are based in the UK. This is important as only these two regions support Alexa. NOTE: the choice of either US or EU is imprtant as it will affect the resutls that you get. The EU node will provide answers in metric and will be much more UK focused, whilst the US node will be imperial and more US focused.
 3. Click on the Create a Lambda Function or Get Started Now button.
 4. Skip the blueprint
 5. Name the Lambda Function "google".
