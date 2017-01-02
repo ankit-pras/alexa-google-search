@@ -263,7 +263,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 
                             }
             }
-            speechOutputTemp = speechOutputTemp.split('ALEXAPAUSE').join('<break time="750ms"/>') // add in SSML pauses at table ends
+            speechOutputTemp = speechOutputTemp.split('ALEXAPAUSE').join(', ') // add in SSML pauses at table ends // disabled until SSML syntax can be checked
             cardOutputText = cardOutputText.split('ALEXAPAUSE').join('') // remove pauses from card text
 			var speechOutput = speechOutputTemp.split('.').join(". ") // deal with any remaining dots and turn them into full stops
 			
