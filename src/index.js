@@ -9,6 +9,9 @@ var $ = require('cheerio')
 var Entities = require('html-entities').XmlEntities;
 var entities = new Entities();
 var striptags = require('striptags');
+var tabletojson = require('tabletojson');
+var xray = require('x-ray')();
+var json2csv = require('json2csv');
 
 
 var APP_ID = undefined; //replace with 'amzn1.echo-sdk-ams.app.[your-unique-value-here]';
@@ -123,18 +126,47 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 			}
 			//instant + description 2
 			if (!found && $('._o0d',body).length>0){
-				found = $('._o0d',body).text()
-				console.log("Found instant and desc 2")		
-			//how many table
-				if ( $('.g>div>table>tr>td>ol',body).length>0){
-					found+= " "+$('.g>div>table>tr>td>ol',body).html()
-				}
+                
+                console.log("Found Found instant and desc 2")
+				var tablehtml = $('._o0d',body).html()
+                
+                found = tablehtml // fallback in case a table isn't found
+                
+                xray(tablehtml, ['table@html'])(function (conversionError, tableHtmlList) {
+                if (conversionError) {
+                  console.log("Xray conversionError");
+                }
+                if (tableHtmlList){
+                  // xray returns the html inside each table tag, and tabletojson
+                  // expects a valid html table, so we need to re-wrap the table.
+                  var table1 = tabletojson.convert('<table>' + tableHtmlList[0]+ '</table>');
+                   console.log(table1)
+                    
+                   var csv = json2csv({data: table1, hasCSVColumnTitle: false })
+                   
+                    console.log(csv);
+                       csv = csv.replace(/(['"])/g, "") //get rid of double quotes
+                       console.log(csv);
+                       console.log("@")
+                       csv = csv.replace(/\,(.*?)\:/g, ", ") //get rid column names
+                       console.log(csv);
+                       console.log("@")
+                       csv = csv.replace(/\{(.*?)\:/g, ", ") //get rid column names
+                       console.log(csv);
+                       console.log("@")
 
-			//how many 1
-				if ( $('._Mqb',body).length>0){
-					found+= " "+$('._Mqb',body).html()
-					console.log("Found Found instant and desc 2 - how many")
-				}
+                       csv = csv.replace(/([}])/g, " ALEXAPAUSE ") //get rid of } and add a pause which will be replaced with SSML later
+                       console.log(csv);
+                       console.log("@")
+                                   
+                        found = csv.toString();
+                    
+                }
+ 
+                
+              });
+				
+
 			}
 
 
@@ -215,16 +247,30 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 
 			// strip out html tags to leave just text
 			var speechOutputTemp = entities.decode(striptags(found))
-			
+			var cardOutputText = speechOutputTemp
 			// make sure all full stops have space after them otherwise alexa says the word dot 
-			var speechOutputTemp = speechOutputTemp.split('.com').join(" dot com ") // deal with dot com
-			var speechOutputTemp = speechOutputTemp.split('.co.uk').join(" dot co dot uk ") // deal with .co.uk
-            //var speechOutputTemp = speechOutputTemp.split(/[0-9].[0-9]/).replace(" point ") // need deal with decimal places but this code is incorrect
+			speechOutputTemp = speechOutputTemp.split('.com').join(" dot com ") // deal with dot com
+			speechOutputTemp = speechOutputTemp.split('.co.uk').join(" dot co dot uk ") // deal with .co.uk
+            speechOutputTemp = speechOutputTemp.split('.net').join(" dot net ") // deal with .net
+            speechOutputTemp = speechOutputTemp.split('.org').join(" dot org ") // deal with .org
+            
+            // deal with decimal places
+            var points = speechOutputTemp.match('([0-9]+\.[0-9]+)') 
+            if ( points != null ) {
+                for (var count = 0; count < points.length ; count++) {	
+                            var replaceString = points[count].replace(".", " point ")
+                            speechOutputTemp = speechOutputTemp.split(points[count]).join(replaceString) 
+
+                            }
+            }
+            speechOutputTemp = speechOutputTemp.split('ALEXAPAUSE').join('<break time="750ms"/>') // add in SSML pauses at table ends
+            cardOutputText = cardOutputText.split('ALEXAPAUSE').join('') // remove pauses from card text
 			var speechOutput = speechOutputTemp.split('.').join(". ") // deal with any remaining dots and turn them into full stops
 			
+            
 						
 			if (speechOutput=="") speechOutput = "I'm sorry, I wasn't able to find an answer."
-			response.tellWithCard(speechOutput, cardTitle, speechOutput)
+			response.tellWithCard(speechOutput, cardTitle, cardOutputText)
 
             //    response.tell(speechOutput)
             }).catch(function(err) {
