@@ -93,6 +93,13 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             }
             }
 
+                        			//name list
+			if (!found && $('#_vBb',body).length>0){
+
+				found = $('#_vBb',body).html()
+				console.log("Found name list")
+						
+			}
 
 			//facts 1
 			if (!found && $('._tXc>span',body).length>0){
@@ -144,22 +151,12 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                     
                    var csv = json2csv({data: table1, hasCSVColumnTitle: false })
                    
-                    console.log(csv);
-                       csv = csv.replace(/(['"])/g, "") //get rid of double quotes
-                       console.log(csv);
-                       console.log("@")
+                   csv = csv.replace(/(['"])/g, "") //get rid of double quotes
                        csv = csv.replace(/\,(.*?)\:/g, ", ") //get rid column names
-                       console.log(csv);
-                       console.log("@")
                        csv = csv.replace(/\{(.*?)\:/g, ", ") //get rid column names
-                       console.log(csv);
-                       console.log("@")
-
                        csv = csv.replace(/([}])/g, " ALEXAPAUSE ") //get rid of } and add a pause which will be replaced with SSML later
-                       console.log(csv);
-                       console.log("@")
-                                   
-                        found = csv.toString();
+                               
+                    found = csv.toString();
                     
                 }
  
@@ -255,22 +252,28 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             speechOutputTemp = speechOutputTemp.split('.org').join(" dot org ") // deal with .org
             
             // deal with decimal places
-            var points = speechOutputTemp.match('([0-9]+\.[0-9]+)') 
-            if ( points != null ) {
-                for (var count = 0; count < points.length ; count++) {	
-                            var replaceString = points[count].replace(".", " point ")
-                            speechOutputTemp = speechOutputTemp.split(points[count]).join(replaceString) 
-
-                            }
-            }
-            speechOutputTemp = speechOutputTemp.split('ALEXAPAUSE').join(', ') // add in SSML pauses at table ends // disabled until SSML syntax can be checked
+            speechOutputTemp = speechOutputTemp.replace(/\d[\.]{1,}/g,'\$&DECIMALPOINT')// search for decimal points following a digit and add DECIMALPOINT TEXT
+            speechOutputTemp = speechOutputTemp.replace(/.DECIMALPOINT/g,'DECIMALPOINT')// remove decimal point
+                                        
+            
+            speechOutputTemp = speechOutputTemp.split('ALEXAPAUSE').join('<break time=\"500ms\"/>') // add in SSML pauses at table ends 
             cardOutputText = cardOutputText.split('ALEXAPAUSE').join('') // remove pauses from card text
-			var speechOutput = speechOutputTemp.split('.').join(". ") // deal with any remaining dots and turn them into full stops
-			
+			speechOutputTemp = speechOutputTemp.split('.').join(". <break time=\"250ms\"/>") // Assume any remaining dot are concatonated sentances so turn them into full stops with a pause afterwards
+			var speechOutput = speechOutputTemp.replace(/DECIMALPOINT/g,'.') // Put back decimal points
             
 						
 			if (speechOutput=="") speechOutput = "I'm sorry, I wasn't able to find an answer."
-			response.tellWithCard(speechOutput, cardTitle, cardOutputText)
+            
+            // Covert speechOutput into SSML so that pauses can be processed
+            var SSMLspeechOutput = {
+                speech: '<speak>' + speechOutput + '</speak>',
+                type: 'SSML'
+            };
+
+            
+			response.tellWithCard(SSMLspeechOutput, cardTitle, cardOutputText)
+            
+            
 
             //    response.tell(speechOutput)
             }).catch(function(err) {
