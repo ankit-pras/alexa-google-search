@@ -232,10 +232,17 @@ AlexaGoogleSearch.prototype.intentHandlers = {
       speechOutputTemp = speechOutputTemp.split('.org').join(" dot org ") // deal with .org
       speechOutputTemp = speechOutputTemp.split('a.m').join("am") // deal with a.m
       speechOutputTemp = speechOutputTemp.split('p.m').join("pm") // deal with a.m
+      
             
       // deal with decimal places
       speechOutputTemp = speechOutputTemp.replace(/\d[\.]{1,}/g,'\$&DECIMALPOINT')// search for decimal points following a digit and add DECIMALPOINT TEXT
       speechOutputTemp = speechOutputTemp.replace(/.DECIMALPOINT/g,'DECIMALPOINT')// remove decimal point
+      
+      // deal with characters that are illegal in SSML
+      
+      speechOutputTemp = speechOutputTemp.replace(/&/g,' and ') // replace ampersands 
+      speechOutputTemp = speechOutputTemp.replace(/</g,' less than ') // replace < symbol 
+      speechOutputTemp = speechOutputTemp.replace(/""/g,'') // replace double quotes 
                                         
             
       speechOutputTemp = speechOutputTemp.split('ALEXAPAUSE').join('<break time=\"500ms\"/>') // add in SSML pauses at table ends 
