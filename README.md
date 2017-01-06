@@ -45,17 +45,7 @@ To run the skill you need to do three things:-
 5. On the Cofigure Triggers tab Click the dotted box and select "Alexa Skills Kit". Click Next  
 6. Name the Lambda Function "google".
 7. Select the runtime as Node.js
-8. Go to the folder that you downloaded from github and unzipped. Open the src folder and select all the files in that folder (including the node_modules folder) and then create a zip file called ARCHIVE.zip. **Make sure the zip file is not just the src directory itself**, otherwise Lambda function will not work.
-
-The contents of the zip file should be as follows:
-
-    ```
-        index.js
-        AlexaSkill.js
-        node_modules ( the folder and its contents )
-    ```
-
-9. Select Code entry type as "Upload a .ZIP file" and then upload the .zip file to the Lambda
+9. Select Code entry type as "Upload a .ZIP file" and then upload the Archive.zip file to the Lambda
 
 **NOTE: if you get a lambda response saying : "The remote endpoint could not be called, or the response it returned was invalid." It is likely that you have zipped the src folder and not it's contents**
 
@@ -121,4 +111,12 @@ The contents of the zip file should be as follows:
 20. Select no for Account Linking
 21. Click Next.
 22. You can test the skill by typing a query into the Service Simulator field or on your actual Alexa device. There is no need to go anyfurther through the process i.e. submitting for certification.
-23. [optional] go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes), then update the lambda source zip file with this change and upload to lambda again, this step makes sure the lambda function only serves request from authorized source.
+23. [optional] go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes).You will need to create a new zip file to upload. Open the src folder, delete Archive.zip and then select all the files in that folder (including the node_modules folder) and then create a new zip file called ARCHIVE.zip. **Make sure the zip file is not just the src directory itself**, otherwise Lambda function will not work.
+
+The contents of the zip file should be as follows:
+
+    ```
+        index.js
+        AlexaSkill.js
+        node_modules ( the folder and its contents )
+    ``` then update the lambda source zip file with this change and upload to lambda again, this step makes sure the lambda function only serves request from authorized source.
