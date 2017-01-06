@@ -88,7 +88,7 @@ To run the skill you need to do three things:-
     ```
 
 12. Click on the "Add Slot Type" button.
-13 Type "SEARCH" into the "Enter Type" field
+13. Type "SEARCH" into the "Enter Type" field
 14. Paste the text below into the "Enter Values" box
 
     ```
@@ -116,5 +116,7 @@ The contents of the zip file should be as follows:
         index.js
         AlexaSkill.js
         node_modules ( the folder and its contents )
-    ``` then update the lambda source zip file with this change and upload to lambda again, this step makes sure the lambda function only serves request from authorized source.
+    ``` 
+Then update the lambda source zip file with this change and upload to lambda again, this step makes sure the lambda function only serves request from authorized source.
+
 **NOTE: if you get a lambda response saying : "The remote endpoint could not be called, or the response it returned was invalid." It is likely that you have zipped the src folder and not it's contents**
