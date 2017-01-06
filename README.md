@@ -70,41 +70,41 @@ To run the skill you need to do three things:-
 10. You will now be on the "Inovation Model" page. 
 11. Copy the text below into the "Intent Schema" box.
 
-```
-{
-  "intents": [
+    ```
     {
-      "intent": "SearchIntent",
-   "slots": [
-     {
-       "name": "search",
-       "type": "SEARCH"
-     }
-   ]    
-    
-    
-    },
-    {
-      "intent": "AMAZON.StopIntent"
+      "intents": [
+        {
+          "intent": "SearchIntent",
+       "slots": [
+         {
+           "name": "search",
+           "type": "SEARCH"
+         }
+       ]    
+
+
+        },
+        {
+          "intent": "AMAZON.StopIntent"
+        }
+      ]
     }
-  ]
-}
-```
+    ```
 
 12. Click on the "Add Slot Type" button.
 13 Type "SEARCH" into the "Enter Type" field
 14. Paste the text below into the "Enter Values" box
 
-```
-who is the queen
-why is the sky blue
-```
+    ```
+    who is the queen
+    why is the sky blue
+    ```
 
 15. Copy the text below amd paste them into the Sample Uterances box.
 
-```
-SearchIntent {search}
-```
+    ```
+    SearchIntent {search}
+    ```
 16. Click Next.
 17. You will now be on the "Configuration" page.
 18.
