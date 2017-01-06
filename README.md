@@ -50,9 +50,9 @@ To run the skill you need to do three things:-
 The contents of the zip file should be as follows:
 
     ```
-    index.js
-    AlexaSkill.js
-    node_modules ( folder )
+        index.js
+        AlexaSkill.js
+        node_modules ( the folder and its contents )
     ```
 
 9. Select Code entry type as "Upload a .ZIP file" and then upload the .zip file to the Lambda
