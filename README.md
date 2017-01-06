@@ -23,10 +23,18 @@ Whilst the skill will return weather forecasts, these will default to either Wes
 
 ## Setup
 
-To run the skill you need to do two things:-
+To run the skill you need to do three things:-
 
-1. deploy the example code in lambda
+1. download the file from github 
+2. deploy the example code in lambda
 2. configure the Alexa skill to use Lambda.
+
+### Download code from github
+
+1. Click on the green "Clone or download" button just under the yellow bar
+2. Click download ZIP
+3. Unzip the file to a known place on your hard-drive
+
 
 ### AWS Lambda Setup
 
@@ -37,7 +45,7 @@ To run the skill you need to do two things:-
 5. On the Cofigure Triggers tab Click the dotted box and select "Alexa Skills Kit". Click Next  
 6. Name the Lambda Function "google".
 7. Select the runtime as Node.js
-8. Go to the the src directory, select all files (including the node_modules folder) and then create a zip file, make sure the zip file does not contain the src directory itself, otherwise Lambda function will not work.
+8. Go to the folder that you downloaded from github and unzipped. Open the src folder and select all the files (including the node_modules folder) and then create a zip file called ARCHIVE.zip, make sure the zip file does not contain the src directory itself, otherwise Lambda function will not work.
 9. Select Code entry type as "Upload a .ZIP file" and then upload the .zip file to the Lambda
 10. Keep the Handler as index.handler (this refers to the main js file in the zip).
 11. Create a basic execution role and click create (or Choose use an existing role if you have deployed skills previously and then select "lambda_basic_executuion" from the existing role dropdown ).
