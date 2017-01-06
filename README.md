@@ -107,8 +107,8 @@ To run the skill you need to do three things:-
     ```
 16. Click Next.
 17. You will now be on the "Configuration" page.
-18.
-19. Select "AWS Lambda ARN (Amazon Resource Name)" for the skill Endpoint Type. Then pick the most appropriate geographical region (either US or EU as appropriate) and paste the ARN you copied in step 14 above. 
+18. Select "AWS Lambda ARN (Amazon Resource Name)" for the skill Endpoint Type.
+19. Then pick the most appropriate geographical region (either US or EU as appropriate) and paste the ARN you copied in step 14 above. 
 20. Select no for Account Linking
 21. Click Next.
 22. You can test the skill by typing a query into the Service Simulator field or on your actual Alexa device. There is no need to go anyfurther through the process i.e. submitting for certification.
