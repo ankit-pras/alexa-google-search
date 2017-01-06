@@ -45,9 +45,11 @@ To run the skill you need to do three things:-
 5. On the Cofigure Triggers tab Click the dotted box and select "Alexa Skills Kit". Click Next  
 6. Name the Lambda Function "google".
 7. Select the runtime as Node.js
-8. Go to the folder that you downloaded from github and unzipped. Open the src folder and select all the files in that folder (including the node_modules folder) and then create a zip file called ARCHIVE.zip, **make_sure_the_zip_file_does_not_contain_the_src_directory_itself**, otherwise Lambda function will not work.
+8. Go to the folder that you downloaded from github and unzipped. Open the src folder and select all the files in that folder (including the node_modules folder) and then create a zip file called ARCHIVE.zip. **Make sure the zip file is not just the src directory itself**, otherwise Lambda function will not work.
 9. Select Code entry type as "Upload a .ZIP file" and then upload the .zip file to the Lambda
-NOTE: if you get a lambda response saying : "The remote endpoint could not be called, or the response it returned was invalid." It is likely that you have zipped the src folder and not it's contents
+
+**NOTE: if you get a lambda response saying : "The remote endpoint could not be called, or the response it returned was invalid." It is likely that you have zipped the src folder and not it's contents**
+
 10. Keep the Handler as index.handler (this refers to the main js file in the zip).
 11. Create a basic execution role and click create (or Choose use an existing role if you have deployed skills previously and then select "lambda_basic_executuion" from the existing role dropdown ).
 12. Under Advanced settings change the Timeout to 10 seconds
