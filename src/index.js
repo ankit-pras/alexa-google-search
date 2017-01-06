@@ -75,10 +75,17 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 					console.log( items + " how many 2 answer found");
 					found = $('._eGc',body).html() + ", ";
 
+
 					for (var count = 0; count < items; count++) {	
 						found = found + $('._m3b',body).eq(count).html() + ", ";
 					}
 				}
+
+                        			//name list
+			if (!found && $('#_vBb',body).length>0){
+
+				found = $('#_vBb',body).html();
+				console.log("Found name list");
 			}
 
 			//facts 1
@@ -110,6 +117,35 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 			}
 			//instant + description 2
 			if (!found && $('._o0d',body).length>0){
+                
+                console.log("Found Found instant and desc 2")
+				var tablehtml = $('._o0d',body).html()
+                
+                found = tablehtml // fallback in case a table isn't found
+                
+                xray(tablehtml, ['table@html'])(function (conversionError, tableHtmlList) {
+                if (conversionError) {
+                  console.log("Xray conversionError");
+                }
+                if (tableHtmlList){
+                  // xray returns the html inside each table tag, and tabletojson
+                  // expects a valid html table, so we need to re-wrap the table.
+                  var table1 = tabletojson.convert('<table>' + tableHtmlList[0]+ '</table>');
+                   console.log(table1)
+                    
+                   var csv = json2csv({data: table1, hasCSVColumnTitle: false })
+                   
+                   csv = csv.replace(/(['"])/g, "") //get rid of double quotes
+                       csv = csv.replace(/\,(.*?)\:/g, ", ") //get rid column names
+                       csv = csv.replace(/\{(.*?)\:/g, ", ") //get rid column names
+                       csv = csv.replace(/([}])/g, " ALEXAPAUSE ") //get rid of } and add a pause which will be replaced with SSML later
+                               
+                    found = csv.toString();
+                    
+                }
+ 
+                
+              });
 				
 				console.log("Found Found instant and desc 2");
 				var tablehtml = $('._o0d',body).html();
@@ -227,40 +263,48 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 			var speechOutputTemp = entities.decode(striptags(found));
 			var cardOutputText = speechOutputTemp;
 			// make sure all full stops have space after them otherwise alexa says the word dot 
-			speechOutputTemp = speechOutputTemp.split('.com').join(" dot com "); // deal with dot com
-			speechOutputTemp = speechOutputTemp.split('.co.uk').join(" dot co dot uk "); // deal with .co.uk
-			speechOutputTemp = speechOutputTemp.split('.net').join(" dot net "); // deal with .net
-			speechOutputTemp = speechOutputTemp.split('.org').join(" dot org "); // deal with .org
-			
-			// deal with decimal places
-			var points = speechOutputTemp.match('([0-9]+\.[0-9]+)');
 
-			if ( points != null ) {
-				for (var count = 0; count < points.length ; count++) {	
-					var replaceString = points[count].replace(".", " point ");
-					speechOutputTemp = speechOutputTemp.split(points[count]).join(replaceString);
-				}
-			}
+			speechOutputTemp = speechOutputTemp.split('.com').join(" dot com ") // deal with dot com
+			speechOutputTemp = speechOutputTemp.split('.co.uk').join(" dot co dot uk ") // deal with .co.uk
+      speechOutputTemp = speechOutputTemp.split('.net').join(" dot net ") // deal with .net
+      speechOutputTemp = speechOutputTemp.split('.org').join(" dot org ") // deal with .org
+            
+      // deal with decimal places
+      speechOutputTemp = speechOutputTemp.replace(/\d[\.]{1,}/g,'\$&DECIMALPOINT')// search for decimal points following a digit and add DECIMALPOINT TEXT
+      speechOutputTemp = speechOutputTemp.replace(/.DECIMALPOINT/g,'DECIMALPOINT')// remove decimal point
+                                        
+            
+      speechOutputTemp = speechOutputTemp.split('ALEXAPAUSE').join('<break time=\"500ms\"/>') // add in SSML pauses at table ends 
+      cardOutputText = cardOutputText.split('ALEXAPAUSE').join('') // remove pauses from card text
+			speechOutputTemp = speechOutputTemp.split('.').join(". <break time=\"250ms\"/>") // Assume any remaining dot are concatonated sentances so turn them into full stops with a pause afterwards
+			var speechOutput = speechOutputTemp.replace(/DECIMALPOINT/g,'.') // Put back decimal points
+            
+						
+			if (speechOutput=="") speechOutput = "I'm sorry, I wasn't able to find an answer."
+            
+            // Covert speechOutput into SSML so that pauses can be processed
+            var SSMLspeechOutput = {
+                speech: '<speak>' + speechOutput + '</speak>',
+                type: 'SSML'
+            };
 
-			speechOutputTemp = speechOutputTemp.split('ALEXAPAUSE').join(', '); // add in SSML pauses at table ends // disabled until SSML syntax can be checked
-			cardOutputText = cardOutputText.split('ALEXAPAUSE').join(''); // remove pauses from card text
-			var speechOutput = speechOutputTemp.split('.').join(". "); // deal with any remaining dots and turn them into full stops
+            
+			response.tellWithCard(SSMLspeechOutput, cardTitle, cardOutputText);
+            
+            
 
-			if (speechOutput=="") speechOutput = "I'm sorry, I wasn't able to find an answer.";
-			response.tellWithCard(speechOutput, cardTitle, cardOutputText);
+            //    response.tell(speechOutput)
+            }).catch(function(err) {
+            console.log("ERROR" + err);
+            speechOutput = "There was an error processing your search.";
+            response.tell(speechOutput);
+        })
+    },
 
-			//    response.tell(speechOutput)
-			}).catch(function(err) {
-			console.log("ERROR" + err);
-			speechOutput = "There was an error processing your search.";
-			response.tell(speechOutput);
-		});
-	},
-
-	"AMAZON.StopIntent": function(intent, session, response) {
-		var speechOutput = "";
-		response.tell(speechOutput);
-	}
+    "AMAZON.StopIntent": function(intent, session, response) {
+        var speechOutput = "";
+        response.tell(speechOutput);
+    }
 }
 
 exports.handler = function(event, context) {
