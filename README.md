@@ -54,18 +54,62 @@ To run the skill you need to do three things:-
 11. Create a basic execution role and click create (or Choose use an existing role if you have deployed skills previously and then select "lambda_basic_executuion" from the existing role dropdown ).
 12. Under Advanced settings change the Timeout to 10 seconds
 13. Click "Next" and review the settings then click "Create Function"
-14. Copy the ARN from the top right to be used later in the Alexa Skill Setup.
+14. Copy the ARN from the top right to be used later in the Alexa Skill Setup (it's the text after **ARN - **). Hint - Paste it into notepad or similar
 
 ### Alexa Skill Setup
 
-1. Go to the Alexa Console (https://developer.amazon.com/edw/home.html) and click Add a New Skill.
-2. Set Custom Interaction as the Skill type
-3. Select the language as English (US) or English (UK) depending on your location
-3. Set "google" as the skill name and "google" as the invocation name, this is what is used to activate your skill. For example you would say: "Alexa, Ask google who is the queen of england."
-4. Select the Lambda ARN for the skill Endpoint (either US or EU as appropriate) and paste the ARN copied from above. Click Next.
-5. Copy the Intent Schema from the included IntentSchema.json and paste it into the Intent Schema box.
-6. Copy the custom slot types from SEARCH.txt in the customSlotTypes folder. Name the Custom SlotType "SEARCH" and paste in the values into the Enter Values box.
-7. Copy the Sample Utterances from the included SampleUtterances.txt and paste them into the Sample Uterances box.
-8. Click Next.
-9. You can test the skill by typing a query into the Service Simulator field or on your actual Alexa device. There is no need to go anyfurther through the process i.e. submitting for certification.
-10. [optional] go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes), then update the lambda source zip file with this change and upload to lambda again, this step makes sure the lambda function only serves request from authorized source.
+1. Go to the Alexa Console (https://developer.amazon.com/edw/home.html and select Alexa on the top menu)
+2. Click "Get Started" under Alexa Skills Kit
+3. Click the "Add a New Skill" yellow box.
+4. You will now be on the "Skill Information" page. 
+5. Set "Custom Interaction Model" as the Skill type
+6. Select the language as English (US) or English (UK) depending on your location
+7. Set "google" as the skill name and "google" as the invocation name, this is what is used to activate your skill. For example you would say: "Alexa, Ask google who is the queen of england."
+8. Leave the "Audio Player" setting to "No"
+9. Click Next.
+10. You will now be on the "Inovation Model" page. 
+11. Copy the text below into the "Intent Schema" box.
+
+```
+{
+  "intents": [
+    {
+      "intent": "SearchIntent",
+   "slots": [
+     {
+       "name": "search",
+       "type": "SEARCH"
+     }
+   ]    
+    
+    
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    }
+  ]
+}
+```
+
+12. Click on the "Add Slot Type" button.
+13 Type "SEARCH" into the "Enter Type" field
+14. Paste the text below into the "Enter Values" box
+
+```
+who is the queen
+why is the sky blue
+```
+
+15. Copy the text below amd paste them into the Sample Uterances box.
+
+```
+SearchIntent {search}
+```
+16. Click Next.
+17. You will now be on the "Configuration" page.
+18.
+19. Select "AWS Lambda ARN (Amazon Resource Name)" for the skill Endpoint Type. Then pick the most appropriate geographical region (either US or EU as appropriate) and paste the ARN you copied in step 14 above. 
+20. Select no for Account Linking
+21. Click Next.
+22. You can test the skill by typing a query into the Service Simulator field or on your actual Alexa device. There is no need to go anyfurther through the process i.e. submitting for certification.
+23. [optional] go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes), then update the lambda source zip file with this change and upload to lambda again, this step makes sure the lambda function only serves request from authorized source.
