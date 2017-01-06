@@ -54,7 +54,7 @@ To run the skill you need to do three things:-
 11. Create a basic execution role and click create (or Choose use an existing role if you have deployed skills previously and then select "lambda_basic_executuion" from the existing role dropdown ).
 12. Under Advanced settings change the Timeout to 10 seconds
 13. Click "Next" and review the settings then click "Create Function"
-14. Copy the ARN from the top right to be used later in the Alexa Skill Setup (it's the text after **ARN - **). Hint - Paste it into notepad or similar
+14. Copy the ARN from the top right to be used later in the Alexa Skill Setup (it's the text after ARN -). Hint - Paste it into notepad or similar
 
 ### Alexa Skill Setup
 
@@ -108,7 +108,7 @@ To run the skill you need to do three things:-
 16. Click Next.
 17. You will now be on the "Configuration" page.
 18. Select "AWS Lambda ARN (Amazon Resource Name)" for the skill Endpoint Type.
-19. Then pick the most appropriate geographical region (either US or EU as appropriate) and paste the ARN you copied in step 14 above. 
+19. Then pick the most appropriate geographical region (either US or EU as appropriate) and paste the ARN you copied in step 14 from the AWS Lambda setup. 
 20. Select no for Account Linking
 21. Click Next.
 22. You can test the skill by typing a query into the Service Simulator field or on your actual Alexa device. There is no need to go anyfurther through the process i.e. submitting for certification.
