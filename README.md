@@ -46,6 +46,15 @@ To run the skill you need to do three things:-
 6. Name the Lambda Function "google".
 7. Select the runtime as Node.js
 8. Go to the folder that you downloaded from github and unzipped. Open the src folder and select all the files in that folder (including the node_modules folder) and then create a zip file called ARCHIVE.zip. **Make sure the zip file is not just the src directory itself**, otherwise Lambda function will not work.
+
+The contents of the zip file should be as follows:
+
+    ```
+    index.js
+    AlexaSkill.js
+    node_modules ( folder )
+    ```
+
 9. Select Code entry type as "Upload a .ZIP file" and then upload the .zip file to the Lambda
 
 **NOTE: if you get a lambda response saying : "The remote endpoint could not be called, or the response it returned was invalid." It is likely that you have zipped the src folder and not it's contents**
