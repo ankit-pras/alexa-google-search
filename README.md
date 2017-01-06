@@ -38,10 +38,10 @@ To run the skill you need to do three things:-
 
 ### AWS Lambda Setup
 
-*1. Go to http://aws.amazon.com/lambda/ . You will need to set-up an AWS account if you don't have one already. 
-*2. Go to the AWS Console and click on the Lambda link. Note: ensure you are in US-East(N. Virginia) if you are based in the US or EU(Ireland) if you are based in the UK. This is important as only these two regions support Alexa. NOTE: the choice of either US or EU is imprtant as it will affect the results that you get. The EU node will provide answers in metric and will be much more UK focused, whilst the US node will be imperial and more US focused.
-*3. Click on the Create a Lambda Function or Get Started Now button.
-*4. Skip the Select Blueprint Tab and just click on the "Configure Triggers" Option on the left hand side
+1. Go to http://aws.amazon.com/lambda/ . You will need to set-up an AWS account if you don't have one already. 
+2. Go to the AWS Console and click on the Lambda link. Note: ensure you are in US-East(N. Virginia) if you are based in the US or EU(Ireland) if you are based in the UK. This is important as only these two regions support Alexa. NOTE: the choice of either US or EU is imprtant as it will affect the results that you get. The EU node will provide answers in metric and will be much more UK focused, whilst the US node will be imperial and more US focused.
+3. Click on the Create a Lambda Function or Get Started Now button.
+4. Skip the Select Blueprint Tab and just click on the "Configure Triggers" Option on the left hand side
 5. On the Cofigure Triggers tab Click the dotted box and select "Alexa Skills Kit". Click Next  
 6. Name the Lambda Function "google".
 7. Select the runtime as Node.js
@@ -58,19 +58,19 @@ To run the skill you need to do three things:-
 
 ### Alexa Skill Setup
 
-*1. Go to the Alexa Console (https://developer.amazon.com/edw/home.html and select Alexa on the top menu)
-*2. Click "Get Started" under Alexa Skills Kit
-*3. Click the "Add a New Skill" yellow box.
-*4. You will now be on the "Skill Information" page. 
-*5. Set "Custom Interaction Model" as the Skill type
-*6. Select the language as English (US) or English (UK) depending on your location
-*7. Set "google" as the skill name and "google" as the invocation name, this is what is used to activate your skill. For example you would say: "Alexa, Ask google who is the queen of england."
-*8. Leave the "Audio Player" setting to "No"
-*9. Click Next.
-*10. You will now be on the "Inovation Model" page. 
-*11. Copy the text below into the "Intent Schema" box.
+1. Go to the Alexa Console (https://developer.amazon.com/edw/home.html and select Alexa on the top menu)
+2. Click "Get Started" under Alexa Skills Kit
+3. Click the "Add a New Skill" yellow box.
+4. You will now be on the "Skill Information" page. 
+5. Set "Custom Interaction Model" as the Skill type
+6. Select the language as English (US) or English (UK) depending on your location
+7. Set "google" as the skill name and "google" as the invocation name, this is what is used to activate your skill. For example you would say: "Alexa, Ask google who is the queen of england."
+8. Leave the "Audio Player" setting to "No"
+9. Click Next.
+10. You will now be on the "Inovation Model" page. 
+11. Copy the text below into the "Intent Schema" box.
 
-```
+`
 {
   "intents": [
     {
@@ -89,26 +89,27 @@ To run the skill you need to do three things:-
     }
   ]
 }
-```
+`
 
-*12. Click on the "Add Slot Type" button.
-*13 Type "SEARCH" into the "Enter Type" field
-*14. Paste the text below into the "Enter Values" box
+12. Click on the "Add Slot Type" button.
+13 Type "SEARCH" into the "Enter Type" field
+14. Paste the text below into the "Enter Values" box
 
-```
+`
 who is the queen
 why is the sky blue
-```
+`
 
-*15. Copy the text below amd paste them into the Sample Uterances box.
+15. Copy the text below amd paste them into the Sample Uterances box.
 
-```
+`
 SearchIntent {search}
-```
-*16. Click Next.
-*17. You will now be on the "Configuration" page.
-*18. Select "AWS Lambda ARN (Amazon Resource Name)" for the skill Endpoint Type. Then pick the most appropriate geographical region (either US or EU as appropriate) and paste the ARN you copied in step 14 above. 
-*19. Select no for Account Linking
-*20. Click Next.
-*21. You can test the skill by typing a query into the Service Simulator field or on your actual Alexa device. There is no need to go anyfurther through the process i.e. submitting for certification.
-*22. [optional] go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes), then update the lambda source zip file with this change and upload to lambda again, this step makes sure the lambda function only serves request from authorized source.
+`
+16. Click Next.
+17. You will now be on the "Configuration" page.
+18.
+19. Select "AWS Lambda ARN (Amazon Resource Name)" for the skill Endpoint Type. Then pick the most appropriate geographical region (either US or EU as appropriate) and paste the ARN you copied in step 14 above. 
+20. Select no for Account Linking
+21. Click Next.
+22. You can test the skill by typing a query into the Service Simulator field or on your actual Alexa device. There is no need to go anyfurther through the process i.e. submitting for certification.
+23. [optional] go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes), then update the lambda source zip file with this change and upload to lambda again, this step makes sure the lambda function only serves request from authorized source.
