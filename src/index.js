@@ -48,9 +48,29 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 		// https://github.com/TheAdrianProject/AdrianSmartAssistant/blob/master/Modules/Google/Google.js        
 
 		//parse queries
-		
+        
+        // create userAgent string from a number of selections
+        
+        var userAgent = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0.1 Safari/602.2.14',
+            'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36'
+            ];
+        
+        var sel = Math.floor((Math.random() * 5) );
+		var userAgentRandom = userAgent[sel];
+        
+        console.log("User Agent: - " + userAgentRandom);
+        
 		// Create search sring
 		var queryString = "http://www.google.com/search?q=" + query + '&oe=utf8';
+        
+        var options = {
+            uri: queryString,
+            'User-Agent': userAgentRandom
+        }
 		
 		rp(queryString)
 			.then(function(body) {
