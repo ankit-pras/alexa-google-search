@@ -163,11 +163,10 @@ This means that the basics of the skill are functioning.
 You have missed one of the steps. To fix this, go to the Configuration Tab in the Lambda Console, click on Advanced settings and in the Timeout box, increase the time to 10 seconds. Then click on Save.
 
 4. My upload to lambda takes ages and then I get a "signature expired"
-
 Your PC/Mac's clock is wrong. Turn on the automatically set time option in your control panel
+
 
 5. Other errors
 Try uploading the zip file again, and wait a minutes or so before testing in the simulator or on a real device. This sorts out most things.
-
 If not drop me a line on this reddit thread https://www.reddit.com/r/amazonecho/comments/5md74z/a_highly_unofficial_alexa_skill_for_google_search/ or raise an issue here on github
 
