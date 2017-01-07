@@ -127,6 +127,10 @@ Then update the lambda source zip file with this change and upload to lambda aga
 1. It works in the simulator but not on my device
 Make sure that the Echo device and AWS/Developer accounts are setup on the **SAME** Amazon account. If you use multiple users accounts on your echo device then make sure it is not switched to someone else's profile
 
+2. I am getting this error message: The remote endpoint could not be called, or the response it returned was invalid"
+Sometimes AWS doesn't like the zip. Try uploading it again. If you are creating your own zip then make sure you follwo the instructions in step 23
+
+
 2. I am getting this error message:
 
     ```
