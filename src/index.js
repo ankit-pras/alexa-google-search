@@ -72,7 +72,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             'User-Agent': userAgentRandom
         }
 		
-		rp(queryString)
+		rp(options)
 			.then(function(body) {
 				console.log("Running parsing");
 				console.log("Search string is:" + queryString);
