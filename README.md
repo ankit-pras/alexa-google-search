@@ -38,18 +38,18 @@ To run the skill you need to do three things:-
 
 ### AWS Lambda Setup
 
-1. Go to http://aws.amazon.com/lambda/ . You will need to set-up an AWS account if you don't have one already. 
+1. Go to http://aws.amazon.com/lambda/ . You will need to set-up an AWS account if you don't have one already ** Make sure you use the same Amazon account that your Echo device is registered to**
 2. Go to the AWS Console and click on the Lambda link. Note: ensure you are in US-East(N. Virginia) if you are based in the US or EU(Ireland) if you are based in the UK. This is important as only these two regions support Alexa. NOTE: the choice of either US or EU is imprtant as it will affect the results that you get. The EU node will provide answers in metric and will be much more UK focused, whilst the US node will be imperial and more US focused.
 3. Click on the Create a Lambda Function or Get Started Now button.
 4. Skip the Select Blueprint Tab and just click on the "Configure Triggers" Option on the left hand side
 5. On the Cofigure Triggers tab Click the dotted box and select "Alexa Skills Kit". Click Next  
 6. Name the Lambda Function "google".
 7. Select the runtime as Node.js
-9. Select Code entry type as "Upload a .ZIP file" and then upload the Archive.zip file to Lambda. This may take a while depending on your connection speed.
+9. Select Code entry type as "Upload a .ZIP file" and click open
 10. Keep the Handler as index.handler (this refers to the main js file in the zip).
 11. Create a basic execution role and click create (or Choose use an existing role if you have deployed skills previously and then select "lambda_basic_executuion" from the existing role dropdown ).
 12. Under Advanced settings change the Timeout to 10 seconds
-13. Click "Next" and review the settings then click "Create Function"
+13. Click "Next" and review the settings then click "Create Function". This will upload the Archive.zip file to Lambda. **This may take a number of minutes depending on your connection speed**
 14. Copy the ARN from the top right to be used later in the Alexa Skill Setup (it's the text after ARN -). Hint - Paste it into notepad or similar
 
 ### Alexa Skill Setup
@@ -120,3 +120,45 @@ The contents of the zip file should be as follows:
 Then update the lambda source zip file with this change and upload to lambda again, this step makes sure the lambda function only serves request from authorized source.
 
 **NOTE: if you get a lambda response saying : "The remote endpoint could not be called, or the response it returned was invalid." It is likely that you have zipped the src folder and not it's contents**
+
+### Fault Finding ### 
+
+
+1. It works in the simulator but not on my device
+Make sure that the Echo device and AWS/Developer accounts are setup on the **SAME** Amazon account. If you use multiple users accounts on your echo device then make sure it is not switched to someone else's profile
+
+2. I am getting this error message:
+
+    ```
+    { "errorMessage": "Cannot read property 'application' of undefined", 
+    "errorType": "TypeError", 
+    "stackTrace": [ "AlexaSkill.execute (/var/task/AlexaSkill.js:86:62)", 
+    "exports.handler (/var/task/index.js:303:26)" 
+    ] }
+    ```
+You don't actually need to worry about this error - This because you are running the save and test option and haven't configured the test. If you want to make sure it isn't anything else then:-
+Next to the "test and save" button there is a "Actions" button, press this and select select Configure Test Event. Click on the Sample event template dropdown menu, scroll down and select "Alexa Start Session", then click "Save and Test". If it is successful then you should see this output:-
+
+    ```
+    {
+      "version": "1.11",
+      "response": {
+        "outputSpeech": {
+          "type": "PlainText",
+          "text": "Welcome to Google Search. What are you searching for?"
+        },
+        "shouldEndSession": false
+      },
+      "sessionAttributes": {}
+    }
+    ```
+This means that the basics of the skill are functioning.
+
+
+3. I am getting this error message
+
+    ```
+    Task timed out after 3.00 seconds
+    ```
+You have missed one of the steps. To fix this, go to the Configuration Tab in the Lambda Console, click on Advanced settings and in the Timeout box, increase the time to 10 seconds. Then click on Save.
+
