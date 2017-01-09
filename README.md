@@ -45,7 +45,7 @@ To run the skill you need to do three things:-
 5. On the Cofigure Triggers tab Click the dotted box and select "Alexa Skills Kit". Click Next  
 6. Name the Lambda Function "google".
 7. Select the runtime as Node.js
-9. Select Code entry type as "Upload a .ZIP file" and click open
+9. Select Code entry type as "Upload a .ZIP file", Select Archive.zip in the src folder and click open. 
 10. Keep the Handler as index.handler (this refers to the main js file in the zip).
 11. Create a basic execution role and click create (or Choose use an existing role if you have deployed skills previously and then select "lambda_basic_executuion" from the existing role dropdown ).
 12. Under Advanced settings change the Timeout to 10 seconds
@@ -127,8 +127,8 @@ Then update the lambda source zip file with this change and upload to lambda aga
 1. It works in the simulator but not on my device
 Make sure that the Echo device and AWS/Developer accounts are setup on the **SAME** Amazon account. If you use multiple users accounts on your echo device then make sure it is not switched to someone else's profile
 
-2. I am getting this error message: The remote endpoint could not be called, or the response it returned was invalid"
-Sometimes AWS doesn't like the zip. Try uploading it again. If you are creating your own zip then make sure you follwo the instructions in step 23
+2. I am getting this error message: "The remote endpoint could not be called, or the response it returned was invalid"
+Sometimes AWS doesn't like the zip. Try uploading it again. If you are creating your own zip then make sure you follow the instructions in step 23
 
 
 2. I am getting this error message:
