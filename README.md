@@ -108,7 +108,7 @@ To run the skill you need to do three things:-
 20. Select no for Account Linking
 21. Click Next.
 22. You can test the skill by typing a query into the Service Simulator field or on your actual Alexa device. There is no need to go anyfurther through the process i.e. submitting for certification.
-23. [optional] go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes).You will need to create a new zip file to upload. Open the src folder, delete Archive.zip and then select all the files in that folder (including the node_modules folder) and then create a new zip file called ARCHIVE.zip. **Make sure the zip file is not just the src directory itself**, otherwise Lambda function will not work.
+23. **[optional]** go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes).You will need to create a new zip file to upload. Open the src folder, delete Archive.zip and then select all the files in that folder (including the node_modules folder) and then create a new zip file called ARCHIVE.zip. **Make sure the zip file is not just the src directory itself**, otherwise Lambda function will not work.
 
 The contents of the zip file should be as follows:
 
@@ -124,8 +124,8 @@ Then update the lambda source zip file with this change and upload to lambda aga
 ### Fault Finding  
 
 
-1. It works in the simulator but not on my device
-Make sure that the Echo device and AWS/Developer accounts are setup on the **SAME** Amazon account. If you use multiple users accounts on your echo device then make sure it is not switched to someone else's profile
+1. It works in the simulator but not on my device.
+Make sure that the Echo device and AWS/Developer accounts are setup on the **SAME** Amazon account. If you use multiple users accounts on your echo device then make sure it is not switched to someone else's profile. Also make sure that the language of the skill (EN-GB or EN-US) is the same as the setting on your device
 
 2. I am getting this error message: "The remote endpoint could not be called, or the response it returned was invalid"
 Sometimes AWS doesn't like the zip. Try uploading it again. If you are creating your own zip then make sure you follow the instructions in step 23
@@ -141,7 +141,9 @@ Sometimes AWS doesn't like the zip. Try uploading it again. If you are creating 
     ] }
     ```
 You don't actually need to worry about this error - This because you are running the save and test option and haven't configured the test. If you want to make sure it isn't anything else then:-
-Next to the "test and save" button there is a "Actions" button, press this and select select Configure Test Event. Click on the Sample event template dropdown menu, scroll down and select "Alexa Start Session", then click "Save and Test". If it is successful then you should see this output:-
+Next to the "test and save" button there is a "Actions" button, press this and select select Configure Test Event. Click on the Sample event template dropdown menu, scroll down and select "Alexa Start Session", then click "Save and Test". **NOTE** If you have setup the Application ID as per above then you will also need to paste this into the test code. 
+
+If it is successful then you should see this output:-
 
     ```
     {
