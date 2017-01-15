@@ -22,7 +22,8 @@ var localeResponseEN = [
     ' and ',
     ' less than ',
     "I’m sorry, I wasn't able to find an answer.",
-    'There was an error processing your search.'
+    'There was an error processing your search.',
+    'I could not find an exact answer. Here is my best guess.'
      
 ];
 
@@ -35,7 +36,8 @@ var localeResponseDE = [
     ' und ',
     ' weniger als ',
     "Es tut mir leid, ich konnte keine Antwort finden.",
-    'Bei der Suche ist leider ein Fehler aufgetreten.'
+    'Bei der Suche ist leider ein Fehler aufgetreten.',
+    'Ich konnte keine genaue Antwort finden. Hier ist meine beste Vermutung.'
      
 ];
 
@@ -333,7 +335,14 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 				}
             }
             
+            // This is the fallback incase non of the above works. It will use the summary test from under the first search result
+                if (!found) {
+                console.log ('Pulling text from first search result as fallback')
+                
+                found = localeResponse[9] + " ALEXAPAUSE"
+                found += $('.st',body).first().html(); // Take text from the summary of the first result
 
+                }
 			
 
 			// strip out html tags to leave just text
