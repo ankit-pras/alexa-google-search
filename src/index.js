@@ -13,6 +13,41 @@ var xray = require('x-ray')();
 var cheerioTableparser = require('cheerio-tableparser');
 var cheerio = require('cheerio');
 
+var localeResponseEN = [
+    'Welcome to Google Search. What are you searching for?',
+    'Google Search Result for: ',
+    'Error',
+    'I found a table of Results.',
+    'dot',
+    ' and ',
+    ' less than ',
+    "I’m sorry, I wasn't able to find an answer.",
+    'There was an error processing your search.'
+     
+];
+
+var localeResponseDE = [
+    'Willkommen zur Google Suche. Wonach soll ich suchen?',
+    'Google Suche nach: ',
+    'Fehler',
+    'Ich fand eine Tabelle der Ergebnisse.',
+    'punkt',
+    ' und ',
+    ' weniger als ',
+    "Es tut mir leid, ich konnte keine Antwort finden.",
+    'Bei der Suche ist leider ein Fehler aufgetreten.'
+     
+];
+
+// Create google search URL - this made up of the main search URL plus a languange modifier (currently only needed for German)
+
+var localeGoogleENGB = ["http://www.google.com/search?q=",""];
+var localeGoogleDE = ["http://www.google.com/search?q=","&hl=de"];
+var localeGoogleENUS = ["http://www.google.com/search?q=",""];
+
+var localeResponse = localeResponseEN;
+var localeGoogle = localeGoogleENUS;
+
 
 var APP_ID = undefined; //replace with 'amzn1.echo-sdk-ams.app.[your-unique-value-here]';
 
@@ -25,8 +60,21 @@ AlexaGoogleSearch.prototype.constructor = AlexaGoogleSearch;
 
 AlexaGoogleSearch.prototype.eventHandlers.onLaunch = function(launchRequest, session, response) {
 	console.log("AlexaGoogleSearch onLaunch requestId" + launchRequest.requestId + ", sessionId: " + session.sessionId);
-	var speechOutput = "Welcome to Google Search. What are you searching for?";
-	var repromptText = "";
+    console.log("Locale is " + launchRequest.locale);
+    
+    
+    if (launchRequest.locale == 'de-DE') {
+        localeResponse = localeResponseDE;
+        localeGoogle = localeGoogleDE;
+    }   
+    if (launchRequest.locale == 'en-GB') {
+        localeResponse = localeResponseEN;
+        localeGoogle = localeGoogleENGB;   
+    }
+           
+    
+	var speechOutput = localeResponse[0];
+	var repromptText = localeResponse[0];
 	response.ask(speechOutput, repromptText);
 }
 
@@ -35,7 +83,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 		var query = intent.slots.search.value;
 		
 		// Title for Alexa app card
-		var cardTitle = ("Google Search Result for: " + query);
+		var cardTitle = (localeResponse[1] + query);
 		
 		// Remove spaces and replace with +
 		query = query.replace(" ","+");
@@ -43,7 +91,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 		// Remove _ and replace with +
 		query = query.replace(/ /g ,"+");
 		
-		var speechOutput = "Error";
+		var speechOutput = localeResponse[2];
 		
 		// Parsing routine modified from 
 		// https://github.com/TheAdrianProject/AdrianSmartAssistant/blob/master/Modules/Google/Google.js        
@@ -66,7 +114,9 @@ AlexaGoogleSearch.prototype.intentHandlers = {
         console.log("User Agent: - " + userAgentRandom);
         
 		// Create search sring
-		var queryString = "http://www.google.com/search?q=" + query + '&oe=utf8';
+		var queryString = localeGoogle[0] + query + '&oe=utf8' + localeGoogle[1];
+        
+       
         
         var options = {
             uri: queryString,
@@ -183,7 +233,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                                             }
                                     }
                                     console.log ("Number of blank cells : " + blankFound)
-                                    found = 'I found a table of Results. ALEXAPAUSE ';
+                                    found = localeResponse[3] + ' ALEXAPAUSE ';
                                     if (blankFound != 0){
                                         headerStart = 1;
                                         //found += headerText +' ALEXAPAUSE ';
@@ -291,10 +341,11 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 			var cardOutputText = speechOutputTemp;
 			// make sure all full stops have space after them otherwise alexa says the word dot 
 
-            speechOutputTemp = speechOutputTemp.split('.com').join(" dot com ") // deal with dot com
-            speechOutputTemp = speechOutputTemp.split('.co.uk').join(" dot co dot uk ") // deal with .co.uk
-            speechOutputTemp = speechOutputTemp.split('.net').join(" dot net ") // deal with .net
-            speechOutputTemp = speechOutputTemp.split('.org').join(" dot org ") // deal with .org
+            speechOutputTemp = speechOutputTemp.split('.com').join(" "+ localeResponse[4] + " com ") // deal with dot com
+            speechOutputTemp = speechOutputTemp.split('.co.uk').join(" "+ localeResponse[4] + " co "+ localeResponse[3] + " uk ") // deal with .co.uk
+            speechOutputTemp = speechOutputTemp.split('.net').join(" "+ localeResponse[4] + " net ") // deal with .net
+            speechOutputTemp = speechOutputTemp.split('.org').join(" "+ localeResponse[4] + " org ") // deal with .org
+            speechOutputTemp = speechOutputTemp.split('.org').join(" "+ localeResponse[4] + " de ") // deal with .de
             speechOutputTemp = speechOutputTemp.split('a.m').join("am") // deal with a.m
             speechOutputTemp = speechOutputTemp.split('p.m').join("pm") // deal with a.m
 
@@ -305,8 +356,8 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 
               // deal with characters that are illegal in SSML
 
-              speechOutputTemp = speechOutputTemp.replace(/&/g,' and ') // replace ampersands 
-              speechOutputTemp = speechOutputTemp.replace(/</g,' less than ') // replace < symbol 
+              speechOutputTemp = speechOutputTemp.replace(/&/g,localeResponse[5]) // replace ampersands 
+              speechOutputTemp = speechOutputTemp.replace(/</g,localeResponse[6]) // replace < symbol 
               speechOutputTemp = speechOutputTemp.replace(/""/g,'') // replace double quotes 
 
               speechOutputTemp = speechOutputTemp.split('SHORTALEXAPAUSE').join('<break time=\"250ms\"/>') // add in SSML pauses at table ends      
@@ -319,7 +370,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             
 						
 			if (speechOutput=="") {
-                speechOutput = "I'm sorry, I wasn't able to find an answer."
+                speechOutput = localeResponse[7]
                 
                 
                 
@@ -339,7 +390,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             //    response.tell(speechOutput)
             }).catch(function(err) {
             console.log("ERROR" + err);
-            speechOutput = "There was an error processing your search.";
+            speechOutput = localeResponse[8];
             response.tell(speechOutput);
         })
     },
