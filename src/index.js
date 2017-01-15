@@ -9,9 +9,10 @@ var $ = require('cheerio');
 var Entities = require('html-entities').XmlEntities;
 var entities = new Entities();
 var striptags = require('striptags');
-var tabletojson = require('tabletojson');
 var xray = require('x-ray')();
-var json2csv = require('json2csv');
+var cheerioTableparser = require('cheerio-tableparser');
+var cheerio = require('cheerio');
+
 
 var APP_ID = undefined; //replace with 'amzn1.echo-sdk-ams.app.[your-unique-value-here]';
 
@@ -76,7 +77,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 			.then(function(body) {
 				console.log("Running parsing");
 				console.log("Search string is:" + queryString);
-				console.log("HTML is:" + $("#ires",body).html());
+				console.log("HTML is:" + $('#ires',body).html());
 								
 			// result variable init
 			var found = 0;
@@ -145,25 +146,66 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                 found = tablehtml // fallback in case a table isn't found
                 
                 xray(tablehtml, ['table@html'])(function (conversionError, tableHtmlList) {
-                if (conversionError) {
-                  console.log("Xray conversionError");
-                }
+
                 if (tableHtmlList){
-                  // xray returns the html inside each table tag, and tabletojson
-                  // expects a valid html table, so we need to re-wrap the table.
-                  var table1 = tabletojson.convert('<table>' + tableHtmlList[0]+ '</table>');
-                   console.log(table1)
+
+                                  // xray returns the html inside each table tag, and tabletojson
+                                  // expects a valid html table, so we need to re-wrap the table.
+                                 // var table1 = tabletojson.convert('<table>' + tableHtmlList[0]+ '</table>');
+                                 var $table2 = cheerio.load('<table>' + tableHtmlList[0]+ '</table>');
+
+                                    cheerioTableparser($table2);
+                                    var headerStart = 0;
+                                    var data2 = $table2("table").parsetable(false, false, true);
+
+                                    var tableWidth = data2.length;
+                                    var tableHeight = data2[0].length;
+                                    console.log("Height " + tableHeight);
+                                    console.log("Width " + tableWidth);
+
+                                    var blankFound = 0;
+                                    var headerText ='';
+    
+                                    for (var l = 0; l < tableWidth; l++) { 
+                                    console.log('Table Data @@@@@' + data2[l]+ '@@@@');
+                                    }
+
+                                    // Look to see whether header row has blank cells in it. 
+                                    // If it does then the headers are titles can't be used so we use first row of table as headers instead
                     
-                   var csv = json2csv({data: table1, hasCSVColumnTitle: false })
-                   
-                   csv = csv.replace(/(['"])/g, "") //get rid of double quotes
-                       csv = csv.replace(/\,(.*?)\:/g, ", ") //get rid column names
-                       csv = csv.replace(/\{(.*?)\:/g, ", ") //get rid column names
-                       csv = csv.replace(/([}])/g, " ALEXAPAUSE ") //get rid of } and add a pause which will be replaced with SSML later
-                               
-                    found = csv.toString();
-                    
+                                    for (var i = 0; i < tableWidth; i++) { 
+                                        console.log(data2[i][0]);
+                                        
+                                            if (data2[i][0] == "") {
+                                                blankFound++;
+                                            } else {
+                                                headerText += (data2[i][0]) + '. SHORTALEXAPAUSE';
+                                            }
+                                    }
+                                    console.log ("Number of blank cells : " + blankFound)
+                                    found = 'I found a table of Results. ALEXAPAUSE ';
+                                    if (blankFound != 0){
+                                        headerStart = 1;
+                                        //found += headerText +' ALEXAPAUSE ';
+                                    }
+
+                                    // Parse table from header row onwards
+                                    for (var x = headerStart ; x < tableHeight; x++) { 
+                                        
+                                        for (var y = 0; y < tableWidth; y++) { 
+                                        found += ( data2[y][x] +', SHORTALEXAPAUSE');
+                                        }
+                                        
+                                        found += ('ALEXAPAUSE');
+                                    }
+
+                                    console.log('Found :' + found)
+                                }
+
+                if (conversionError){
+                    console.log("There was a conversion error: " + conversionError);
                 }
+
  
                 
               });
@@ -239,39 +281,49 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 					found+= " "+ $('._Lbd',body).html();
 					console.log("Found how many");
 				}
-			}
+            }
+            
+
+			
 
 			// strip out html tags to leave just text
 			var speechOutputTemp = entities.decode(striptags(found));
 			var cardOutputText = speechOutputTemp;
 			// make sure all full stops have space after them otherwise alexa says the word dot 
 
-			speechOutputTemp = speechOutputTemp.split('.com').join(" dot com ") // deal with dot com
-			speechOutputTemp = speechOutputTemp.split('.co.uk').join(" dot co dot uk ") // deal with .co.uk
-      speechOutputTemp = speechOutputTemp.split('.net').join(" dot net ") // deal with .net
-      speechOutputTemp = speechOutputTemp.split('.org').join(" dot org ") // deal with .org
-      speechOutputTemp = speechOutputTemp.split('a.m').join("am") // deal with a.m
-      speechOutputTemp = speechOutputTemp.split('p.m').join("pm") // deal with a.m
-      
-            
-      // deal with decimal places
-      speechOutputTemp = speechOutputTemp.replace(/\d[\.]{1,}/g,'\$&DECIMALPOINT')// search for decimal points following a digit and add DECIMALPOINT TEXT
-      speechOutputTemp = speechOutputTemp.replace(/.DECIMALPOINT/g,'DECIMALPOINT')// remove decimal point
-      
-      // deal with characters that are illegal in SSML
-      
-      speechOutputTemp = speechOutputTemp.replace(/&/g,' and ') // replace ampersands 
-      speechOutputTemp = speechOutputTemp.replace(/</g,' less than ') // replace < symbol 
-      speechOutputTemp = speechOutputTemp.replace(/""/g,'') // replace double quotes 
-                                        
-            
-      speechOutputTemp = speechOutputTemp.split('ALEXAPAUSE').join('<break time=\"500ms\"/>') // add in SSML pauses at table ends 
-      cardOutputText = cardOutputText.split('ALEXAPAUSE').join('') // remove pauses from card text
-			speechOutputTemp = speechOutputTemp.split('.').join(". <break time=\"250ms\"/>") // Assume any remaining dot are concatonated sentances so turn them into full stops with a pause afterwards
+            speechOutputTemp = speechOutputTemp.split('.com').join(" dot com ") // deal with dot com
+            speechOutputTemp = speechOutputTemp.split('.co.uk').join(" dot co dot uk ") // deal with .co.uk
+            speechOutputTemp = speechOutputTemp.split('.net').join(" dot net ") // deal with .net
+            speechOutputTemp = speechOutputTemp.split('.org').join(" dot org ") // deal with .org
+            speechOutputTemp = speechOutputTemp.split('a.m').join("am") // deal with a.m
+            speechOutputTemp = speechOutputTemp.split('p.m').join("pm") // deal with a.m
+
+
+              // deal with decimal places
+              speechOutputTemp = speechOutputTemp.replace(/\d[\.]{1,}/g,'\$&DECIMALPOINT')// search for decimal points following a digit and add DECIMALPOINT TEXT
+              speechOutputTemp = speechOutputTemp.replace(/.DECIMALPOINT/g,'DECIMALPOINT')// remove decimal point
+
+              // deal with characters that are illegal in SSML
+
+              speechOutputTemp = speechOutputTemp.replace(/&/g,' and ') // replace ampersands 
+              speechOutputTemp = speechOutputTemp.replace(/</g,' less than ') // replace < symbol 
+              speechOutputTemp = speechOutputTemp.replace(/""/g,'') // replace double quotes 
+
+              speechOutputTemp = speechOutputTemp.split('SHORTALEXAPAUSE').join('<break time=\"250ms\"/>') // add in SSML pauses at table ends      
+              speechOutputTemp = speechOutputTemp.split('ALEXAPAUSE').join('<break time=\"500ms\"/>') // add in SSML pauses at table ends 
+              cardOutputText = cardOutputText.split('SHORTALEXAPAUSE').join('') // remove pauses from card text
+              cardOutputText = cardOutputText.split('ALEXAPAUSE').join('\r\n') // remove pauses from card text
+
+			speechOutputTemp = speechOutputTemp.split('.').join(". ") // Assume any remaining dot are concatonated sentances so turn them into full stops with a pause afterwards
 			var speechOutput = speechOutputTemp.replace(/DECIMALPOINT/g,'.') // Put back decimal points
             
 						
-			if (speechOutput=="") speechOutput = "I'm sorry, I wasn't able to find an answer."
+			if (speechOutput=="") {
+                speechOutput = "I'm sorry, I wasn't able to find an answer."
+                
+                
+                
+            }
             
             // Covert speechOutput into SSML so that pauses can be processed
             var SSMLspeechOutput = {
