@@ -2,6 +2,8 @@
 
 A highly unofficial alexa skill for google search
 
+# THIS IS AN UNSTABLE DEVELOPMENT BRANCH - PLEASE DO NOT INSTALL THIS VERSION AS IT PROBABLY WON'T WORK! 
+
 ### THIS SKILL IS FOR PERSONAL USE ONLY AND IS NOT ENDORSED BY GOOGLE OR AMAZON - DO NOT SUBMIT THIS TO AMAZON FOR CERTIFICATION AS IT WON'T PASS!
 
 This skill is based upon the google search module created for the Adrian Smart assistant project here:-
@@ -39,7 +41,7 @@ To run the skill you need to do three things:-
 ### AWS Lambda Setup
 
 1. Go to http://aws.amazon.com/lambda/ . You will need to set-up an AWS account if you don't have one already ** Make sure you use the same Amazon account that your Echo device is registered to**
-2. Go to the AWS Console and click on the Lambda link. Note: ensure you are in US-East(N. Virginia) if you are based in the US or EU(Ireland) if you are based in the UK. This is important as only these two regions support Alexa. NOTE: the choice of either US or EU is imprtant as it will affect the results that you get. The EU node will provide answers in metric and will be much more UK focused, whilst the US node will be imperial and more US focused.
+2. Go to the AWS Console and click on the Lambda link. Go to the drop down "Location" menu and ensure you select US-East(N. Virginia) if you are based in the US or EU(Ireland) if you are based in the UK or Germany. This is important as only these two regions support Alexa. NOTE: the choice of either US or EU is important as it will affect the results that you get. The EU node will provide answers in metric and will be much more UK focused, whilst the US node will be imperial and more US focused.
 3. Click on the Create a Lambda Function or Get Started Now button.
 4. Skip the Select Blueprint Tab and just click on the "Configure Triggers" Option on the left hand side
 5. On the Cofigure Triggers tab Click the dotted box and select "Alexa Skills Kit". Click Next  
@@ -108,7 +110,7 @@ To run the skill you need to do three things:-
 20. Select no for Account Linking
 21. Click Next.
 22. You can test the skill by typing a query into the Service Simulator field or on your actual Alexa device. There is no need to go anyfurther through the process i.e. submitting for certification.
-23. [optional] go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes).You will need to create a new zip file to upload. Open the src folder, delete Archive.zip and then select all the files in that folder (including the node_modules folder) and then create a new zip file called ARCHIVE.zip. **Make sure the zip file is not just the src directory itself**, otherwise Lambda function will not work.
+23. **[optional]** go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes).You will need to create a new zip file to upload. Open the src folder, delete Archive.zip and then select all the files in that folder (including the node_modules folder) and then create a new zip file called ARCHIVE.zip. **Make sure the zip file is not just the src directory itself**, otherwise Lambda function will not work.
 
 The contents of the zip file should be as follows:
 
@@ -124,8 +126,8 @@ Then update the lambda source zip file with this change and upload to lambda aga
 ### Fault Finding  
 
 
-1. It works in the simulator but not on my device
-Make sure that the Echo device and AWS/Developer accounts are setup on the **SAME** Amazon account. If you use multiple users accounts on your echo device then make sure it is not switched to someone else's profile
+1. It works in the simulator but not on my device.
+Make sure that the Echo device and AWS/Developer accounts are setup on the **SAME** Amazon account. If you use multiple users accounts on your echo device then make sure it is not switched to someone else's profile. Also make sure that the language of the skill (EN-GB or EN-US) is the same as the setting on your device
 
 2. I am getting this error message: "The remote endpoint could not be called, or the response it returned was invalid"
 Sometimes AWS doesn't like the zip. Try uploading it again. If you are creating your own zip then make sure you follow the instructions in step 23
@@ -141,7 +143,9 @@ Sometimes AWS doesn't like the zip. Try uploading it again. If you are creating 
     ] }
     ```
 You don't actually need to worry about this error - This because you are running the save and test option and haven't configured the test. If you want to make sure it isn't anything else then:-
-Next to the "test and save" button there is a "Actions" button, press this and select select Configure Test Event. Click on the Sample event template dropdown menu, scroll down and select "Alexa Start Session", then click "Save and Test". If it is successful then you should see this output:-
+Next to the "test and save" button there is a "Actions" button, press this and select select Configure Test Event. Click on the Sample event template dropdown menu, scroll down and select "Alexa Start Session", then click "Save and Test". **NOTE** If you have setup the Application ID as per above then you will also need to paste this into the test code. 
+
+If it is successful then you should see this output:-
 
     ```
     {
@@ -159,18 +163,18 @@ Next to the "test and save" button there is a "Actions" button, press this and s
 This means that the basics of the skill are functioning.
 
 
-3. I am getting this error message
+3. I am getting this error message:-
 
     ```
     Task timed out after 3.00 seconds
     ```
 You have missed one of the steps. To fix this, go to the Configuration Tab in the Lambda Console, click on Advanced settings and in the Timeout box, increase the time to 10 seconds. Then click on Save.
 
-4. My upload to lambda takes ages and then I get a "signature expired"
+4. My upload to lambda takes ages and then I get a "signature expired".
+
 Your PC/Mac's clock is wrong. Turn on the automatically set time option in your control panel
 
 
-5. Other errors
+5. Other errors.
 Try uploading the zip file again, and wait a minutes or so before testing in the simulator or on a real device. This sorts out most things.
 If not drop me a line on this reddit thread https://www.reddit.com/r/amazonecho/comments/5md74z/a_highly_unofficial_alexa_skill_for_google_search/ or raise an issue here on github
-
