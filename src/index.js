@@ -12,6 +12,7 @@ var striptags = require('striptags');
 var xray = require('x-ray')();
 var cheerioTableparser = require('cheerio-tableparser');
 var cheerio = require('cheerio');
+var summary = require('node-tldr');
 
 var localeResponseEN = [
     'Welcome to Google Search. What are you searching for?',
@@ -43,7 +44,7 @@ var localeResponseDE = [
 
 // Create google search URL - this made up of the main search URL plus a languange modifier (currently only needed for German)
 
-var localeGoogleENGB = ["http://www.google.com/search?q=",""];
+var localeGoogleENGB = ["http://www.google.co.uk/search?q=",""];
 var localeGoogleDE = ["http://www.google.com/search?q=","&hl=de"];
 var localeGoogleENUS = ["http://www.google.com/search?q=",""];
 
@@ -82,6 +83,19 @@ AlexaGoogleSearch.prototype.eventHandlers.onLaunch = function(launchRequest, ses
 
 AlexaGoogleSearch.prototype.intentHandlers = {
 	"SearchIntent": function(intent, session, response) {
+        
+    console.log("Locale is " + intent.locale);
+    
+    
+    if (intent.locale == 'de-DE') {
+        localeResponse = localeResponseDE;
+        localeGoogle = localeGoogleDE;
+    }   
+    if (intent.locale == 'en-GB') {
+        localeResponse = localeResponseEN;
+        localeGoogle = localeGoogleENGB;   
+    }
+
 		var query = intent.slots.search.value;
 		
 		// Title for Alexa app card
@@ -94,6 +108,79 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 		query = query.replace(/ /g ,"+");
 		
 		var speechOutput = localeResponse[2];
+        
+    function speakResults (speechText) {
+            
+            // strip out html tags to leave just text
+			var speechOutputTemp = entities.decode(striptags(speechText));
+			var cardOutputText = speechOutputTemp;
+			// make sure all full stops have space after them otherwise alexa says the word dot 
+
+            speechOutputTemp = speechOutputTemp.split('.com').join(" "+ localeResponse[4] + " com ") // deal with dot com
+            speechOutputTemp = speechOutputTemp.split('.co.uk').join(" "+ localeResponse[4] + " co "+ localeResponse[3] + " uk ") // deal with .co.uk
+            speechOutputTemp = speechOutputTemp.split('.net').join(" "+ localeResponse[4] + " net ") // deal with .net
+            speechOutputTemp = speechOutputTemp.split('.org').join(" "+ localeResponse[4] + " org ") // deal with .org
+            speechOutputTemp = speechOutputTemp.split('.org').join(" "+ localeResponse[4] + " de ") // deal with .de
+            speechOutputTemp = speechOutputTemp.split('a.m').join("am") // deal with a.m
+            speechOutputTemp = speechOutputTemp.split('p.m').join("pm") // deal with a.m
+
+
+              // deal with decimal places
+              speechOutputTemp = speechOutputTemp.replace(/\d[\.]{1,}/g,'\$&DECIMALPOINT')// search for decimal points following a digit and add DECIMALPOINT TEXT
+              speechOutputTemp = speechOutputTemp.replace(/.DECIMALPOINT/g,'DECIMALPOINT')// remove decimal point
+
+              // deal with characters that are illegal in SSML
+
+              speechOutputTemp = speechOutputTemp.replace(/&/g,localeResponse[5]) // replace ampersands 
+              speechOutputTemp = speechOutputTemp.replace(/</g,localeResponse[6]) // replace < symbol 
+              speechOutputTemp = speechOutputTemp.replace(/""/g,'') // replace double quotes 
+
+              speechOutputTemp = speechOutputTemp.split('SHORTALEXAPAUSE').join('<break time=\"250ms\"/>') // add in SSML pauses at table ends      
+              speechOutputTemp = speechOutputTemp.split('ALEXAPAUSE').join('<break time=\"500ms\"/>') // add in SSML pauses at table ends 
+              cardOutputText = cardOutputText.split('SHORTALEXAPAUSE').join('') // remove pauses from card text
+              cardOutputText = cardOutputText.split('ALEXAPAUSE').join('\r\n') // remove pauses from card text
+
+			speechOutputTemp = speechOutputTemp.split('.').join(". ") // Assume any remaining dot are concatonated sentances so turn them into full stops with a pause afterwards
+			var speechOutput = speechOutputTemp.replace(/DECIMALPOINT/g,'.') // Put back decimal points
+            
+						
+			if (speechOutput=="") {
+                speechOutput = localeResponse[7]
+                
+                
+                
+            }
+            
+            // Covert speechOutput into SSML so that pauses can be processed
+            var SSMLspeechOutput = {
+                speech: '<speak>' + speechOutput + '</speak>',
+                type: 'SSML'
+            };
+
+            
+			response.tellWithCard(SSMLspeechOutput, cardTitle, cardOutputText);
+            
+ 
+            
+        };
+        
+    function parsePage (url) {
+        console.log("Summarising first link");
+        summary.summarize(url, function(result, failure) {
+        if (failure) {
+            console.log("An error occured! " + result.error);
+            speakResults(localeResponse[8]);
+        }
+        if (result) {    
+        console.log(result.title);
+        console.log(result.summary.join("\n"));
+        var summarisedText = localeResponse[9] + result.title + "ALEXAPAUSE" + result.summary.join("\n");
+        speakResults(summarisedText);
+        }
+        });
+    
+        
+    };
 		
 		// Parsing routine modified from 
 		// https://github.com/TheAdrianProject/AdrianSmartAssistant/blob/master/Modules/Google/Google.js        
@@ -335,70 +422,24 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 				}
             }
             
-            // This is the fallback incase non of the above works. It will use the summary test from under the first search result
-                if (!found) {
-                console.log ('Pulling text from first search result as fallback')
-                
-                found = localeResponse[9] + " ALEXAPAUSE"
-                found += $('.st',body).first().html(); // Take text from the summary of the first result
+            if (found) {
+                speakResults(found);
+
+                } else {
+
+                    var linkUrl = $('.g>.r>a',body).attr('href'); // Take url of first result
+                    linkUrl = linkUrl.replace('/url?q=','')
+                    var urlFinal = linkUrl.split("&");
+
+                    parsePage (urlFinal[0]);
 
                 }
 			
-
-			// strip out html tags to leave just text
-			var speechOutputTemp = entities.decode(striptags(found));
-			var cardOutputText = speechOutputTemp;
-			// make sure all full stops have space after them otherwise alexa says the word dot 
-
-            speechOutputTemp = speechOutputTemp.split('.com').join(" "+ localeResponse[4] + " com ") // deal with dot com
-            speechOutputTemp = speechOutputTemp.split('.co.uk').join(" "+ localeResponse[4] + " co "+ localeResponse[3] + " uk ") // deal with .co.uk
-            speechOutputTemp = speechOutputTemp.split('.net').join(" "+ localeResponse[4] + " net ") // deal with .net
-            speechOutputTemp = speechOutputTemp.split('.org').join(" "+ localeResponse[4] + " org ") // deal with .org
-            speechOutputTemp = speechOutputTemp.split('.org').join(" "+ localeResponse[4] + " de ") // deal with .de
-            speechOutputTemp = speechOutputTemp.split('a.m').join("am") // deal with a.m
-            speechOutputTemp = speechOutputTemp.split('p.m').join("pm") // deal with a.m
-
-
-              // deal with decimal places
-              speechOutputTemp = speechOutputTemp.replace(/\d[\.]{1,}/g,'\$&DECIMALPOINT')// search for decimal points following a digit and add DECIMALPOINT TEXT
-              speechOutputTemp = speechOutputTemp.replace(/.DECIMALPOINT/g,'DECIMALPOINT')// remove decimal point
-
-              // deal with characters that are illegal in SSML
-
-              speechOutputTemp = speechOutputTemp.replace(/&/g,localeResponse[5]) // replace ampersands 
-              speechOutputTemp = speechOutputTemp.replace(/</g,localeResponse[6]) // replace < symbol 
-              speechOutputTemp = speechOutputTemp.replace(/""/g,'') // replace double quotes 
-
-              speechOutputTemp = speechOutputTemp.split('SHORTALEXAPAUSE').join('<break time=\"250ms\"/>') // add in SSML pauses at table ends      
-              speechOutputTemp = speechOutputTemp.split('ALEXAPAUSE').join('<break time=\"500ms\"/>') // add in SSML pauses at table ends 
-              cardOutputText = cardOutputText.split('SHORTALEXAPAUSE').join('') // remove pauses from card text
-              cardOutputText = cardOutputText.split('ALEXAPAUSE').join('\r\n') // remove pauses from card text
-
-			speechOutputTemp = speechOutputTemp.split('.').join(". ") // Assume any remaining dot are concatonated sentances so turn them into full stops with a pause afterwards
-			var speechOutput = speechOutputTemp.replace(/DECIMALPOINT/g,'.') // Put back decimal points
-            
-						
-			if (speechOutput=="") {
-                speechOutput = localeResponse[7]
-                
-                
-                
-            }
-            
-            // Covert speechOutput into SSML so that pauses can be processed
-            var SSMLspeechOutput = {
-                speech: '<speak>' + speechOutput + '</speak>',
-                type: 'SSML'
-            };
-
-            
-			response.tellWithCard(SSMLspeechOutput, cardTitle, cardOutputText);
-            
             
 
             //    response.tell(speechOutput)
             }).catch(function(err) {
-            console.log("ERROR" + err);
+            console.log("ERROR " + err);
             speechOutput = localeResponse[8];
             response.tell(speechOutput);
         })
