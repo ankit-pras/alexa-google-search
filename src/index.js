@@ -421,13 +421,8 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 
                 } else {
 
-                    var linkUrl = $('.g>.r>a',body).attr('href'); // Take url of first result
-                    linkUrl = linkUrl.replace('/url?q=','')
-                    var urlFinal = linkUrl.split("&");
-                    var backUpText = $('.st',body).first().html(); // Take text from the summary of the second result
-                    console.log('Backup Text is :- ' + backUpText);
-                    //parsePage (urlFinal[0],backUpText);
-                    speakResults(localeResponse[9] + backUpText + ". ALEXAPAUSE");
+
+                    speakResults(localeResponse[7]);
 
                 }
 			

@@ -148,7 +148,7 @@ Response.prototype = (function () {
             };
         }
         var returnResult = {
-                version: '1.5 bug fix',
+                version: '1.5.1 - bug fix and localisation',
                 response: alexaResponse
         };
         if (options.session && options.session.attributes) {
