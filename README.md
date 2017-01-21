@@ -65,7 +65,7 @@ To run the skill you need to do three things:-
 4. Skip the Select Blueprint Tab and just click on the "Configure Triggers" Option on the left hand side
 5. On the Cofigure Triggers tab Click the dotted box and select "Alexa Skills Kit". Click Next  
 6. Name the Lambda Function "google".
-7. Select the runtime as Node.js
+7. Select the runtime as node.js 4.3
 9. Select Code entry type as "Upload a .ZIP file", Select Archive.zip in the src folder and click open. 
 10. Keep the Handler as index.handler (this refers to the main js file in the zip).
 11. Create a basic execution role and click create (or Choose use an existing role if you have deployed skills previously and then select "lambda_basic_executuion" from the existing role dropdown ).
