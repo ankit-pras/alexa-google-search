@@ -59,7 +59,7 @@ To run the skill you need to do three things:-
 
 ### AWS Lambda Setup
 
-1. Go to http://aws.amazon.com/lambda/ . You will need to set-up an AWS account if you don't have one already ** Make sure you use the same Amazon account that your Echo device is registered to**
+1. Go to http://aws.amazon.com/lambda/ . You will need to set-up an AWS account (the basic one will do fine) if you don't have one already ** Make sure you use the same Amazon account that your Echo device is registered to** Note - you will need a credit or debit card to set up an AWS account - there is no way around this. If you are just using this skill then you are highly unlikely to be charged unless you are making at least a million requests a month!
 2. Go to the AWS Console and click on the Lambda link. Go to the drop down "Location" menu and ensure you select US-East(N. Virginia) if you are based in the US or EU(Ireland) if you are based in the UK or Germany. This is important as only these two regions support Alexa. NOTE: the choice of either US or EU is important as it will affect the results that you get. The EU node will provide answers in metric and will be much more UK focused, whilst the US node will be imperial and more US focused.
 3. Click on the Create a Lambda Function or Get Started Now button.
 4. Skip the Select Blueprint Tab and just click on the "Configure Triggers" Option on the left hand side
