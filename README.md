@@ -2,9 +2,13 @@
 
 A highly unofficial alexa skill for google search
 
-# AMAZON ECHO UK USERS GROUP BUILD
+# Verison 1.5
 
-# THIS IS AN UNSTABLE DEVELOPMENT BRANCH - PLEASE DO NOT INSTALL THIS VERSION UNLESS HAVE BEEN ASKED AS IT PROBABLY WON'T WORK! 
+This version fixes the following issues in the original code:-
+
+1. Localisation and German support - the skill will now automatically detect which region it is running in and set the search and prompts into either US/UK English or German as appropriate. Make sure your skill and device are set to the SAME language
+2. Better handling of results in a table.
+3. Better handling of punctuation
 
 ### THIS SKILL IS FOR PERSONAL USE ONLY AND IS NOT ENDORSED BY GOOGLE OR AMAZON - DO NOT SUBMIT THIS TO AMAZON FOR CERTIFICATION AS IT WON'T PASS!
 
