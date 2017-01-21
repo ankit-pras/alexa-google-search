@@ -28,6 +28,19 @@ Whilst the skill will return weather forecasts, these will default to either Wes
 ###  Note - this skill works as a screen reader by parsing the google results page and looking for the google answers boxes at the top of the results page. This may be against the google terms of service so you use it at your own risk. 
 
 
+## Upgrading from a previous version
+
+You can update to this version by uploading the new Archive.zip from github as per step 8 in the AWS Lambda setup instructions below (except hit "Save" rather than "Save and Test" once you have selected the Archive.zip file).
+
+**If you get a "Cannot read property 'application' of undefined" error then you have hit the "Save and Test" file and you can either ignore this error or follow the steps in the Fault Finding section below**
+
+NOTE - this is the same skill as that linked to by alexamods.com so you can over-write the older version if you followed the instructions there rather than on this page.
+
+
+
+
+
+
 
 ## Setup
 
