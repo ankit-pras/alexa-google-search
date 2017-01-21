@@ -147,7 +147,7 @@ Response.prototype = (function () {
             };
         }
         var returnResult = {
-                version: '2.0 beta 2',
+                version: '2.0 beta 3',
                 response: alexaResponse
         };
         if (options.session && options.session.attributes) {

@@ -24,7 +24,7 @@ var localeResponseEN = [
     ' less than ',
     "I’m sorry, I wasn't able to find an answer.",
     'There was an error processing your search.',
-    'I could not find an exact answer. Here is my best guess.'
+    'I could not find an exact answer. Here is my best guess: '
      
 ];
 
@@ -38,7 +38,7 @@ var localeResponseDE = [
     ' weniger als ',
     "Es tut mir leid, ich konnte keine Antwort finden.",
     'Bei der Suche ist leider ein Fehler aufgetreten.',
-    'Ich konnte keine genaue Antwort finden. Hier ist meine beste Vermutung.'
+    'Ich konnte keine genaue Antwort finden. Hier ist meine beste Vermutung: '
      
 ];
 
@@ -164,19 +164,30 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             
         };
         
-    function parsePage (url) {
+    function parsePage (url,backUpText) {
         console.log("Summarising first link");
         summary.summarize(url, function(result, failure) {
+            backUpText = localeResponse[9] + backUpText
+            
         if (failure) {
             console.log("An error occured! " + result.error);
             speakResults(localeResponse[8]);
         }
+        
         if (result) {    
         console.log(result.title);
         console.log(result.summary.join("\n"));
         var summarisedText = localeResponse[9] + result.title + "ALEXAPAUSE" + result.summary.join("\n");
-        speakResults(summarisedText);
+            
+        if(backUpText.length >= summarisedText.length ) {
+            
+            summarisedText = backUpText;
         }
+        
+         speakResults(summarisedText);
+        }
+            
+            
         });
     
         
@@ -430,8 +441,9 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                     var linkUrl = $('.g>.r>a',body).attr('href'); // Take url of first result
                     linkUrl = linkUrl.replace('/url?q=','')
                     var urlFinal = linkUrl.split("&");
-
-                    parsePage (urlFinal[0]);
+                    var backUpText = $('.st',body).first().html(); // Take text from the summary of the first result
+                    console.log('Backup Text is :- ' + backUpText);
+                    parsePage (urlFinal[0],backUpText);
 
                 }
 			
