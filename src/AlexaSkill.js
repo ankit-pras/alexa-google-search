@@ -10,9 +10,11 @@
 
 'use strict';
 
+
 function AlexaSkill(appId) {
     this._appId = appId;
 }
+
 
 AlexaSkill.speechOutputType = {
     PLAIN_TEXT: 'PlainText',
@@ -84,7 +86,6 @@ AlexaSkill.prototype.intentHandlers = {};
 AlexaSkill.prototype.execute = function (event, context) {
     try {
         console.log("session applicationId: " + event.session.application.applicationId);
-
         // Validate that this request originated from authorized source.
         if (this._appId && event.session.application.applicationId !== this._appId) {
             console.log("The applicationIds don't match : " + event.session.application.applicationId + " and "
@@ -147,7 +148,7 @@ Response.prototype = (function () {
             };
         }
         var returnResult = {
-                version: '2.0 beta 3',
+                version: '2.0 beta 4',
                 response: alexaResponse
         };
         if (options.session && options.session.attributes) {

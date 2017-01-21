@@ -48,6 +48,8 @@ var localeGoogleENGB = ["http://www.google.co.uk/search?q=",""];
 var localeGoogleDE = ["http://www.google.com/search?q=","&hl=de"];
 var localeGoogleENUS = ["http://www.google.com/search?q=",""];
 
+var sessionLocale = '';
+
 var localeResponse = localeResponseEN;
 var localeGoogle = localeGoogleENUS;
 
@@ -63,17 +65,10 @@ AlexaGoogleSearch.prototype.constructor = AlexaGoogleSearch;
 
 AlexaGoogleSearch.prototype.eventHandlers.onLaunch = function(launchRequest, session, response) {
 	console.log("AlexaGoogleSearch onLaunch requestId" + launchRequest.requestId + ", sessionId: " + session.sessionId);
-    console.log("Locale is " + launchRequest.locale);
     
     
-    if (launchRequest.locale == 'de-DE') {
-        localeResponse = localeResponseDE;
-        localeGoogle = localeGoogleDE;
-    }   
-    if (launchRequest.locale == 'en-GB') {
-        localeResponse = localeResponseEN;
-        localeGoogle = localeGoogleENGB;   
-    }
+    
+
            
     
 	var speechOutput = localeResponse[0];
@@ -84,18 +79,6 @@ AlexaGoogleSearch.prototype.eventHandlers.onLaunch = function(launchRequest, ses
 AlexaGoogleSearch.prototype.intentHandlers = {
 	"SearchIntent": function(intent, session, response) {
         
-    console.log("Locale is " + intent.locale);
-    
-    
-    if (intent.locale == 'de-DE') {
-        localeResponse = localeResponseDE;
-        localeGoogle = localeGoogleDE;
-    }   
-    if (intent.locale == 'en-GB') {
-        localeResponse = localeResponseEN;
-        localeGoogle = localeGoogleENGB;   
-    }
-
 		var query = intent.slots.search.value;
 		
 		// Title for Alexa app card
@@ -441,9 +424,10 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                     var linkUrl = $('.g>.r>a',body).attr('href'); // Take url of first result
                     linkUrl = linkUrl.replace('/url?q=','')
                     var urlFinal = linkUrl.split("&");
-                    var backUpText = $('.st',body).first().html(); // Take text from the summary of the first result
+                    var backUpText = $('.st',body).first().html(); // Take text from the summary of the second result
                     console.log('Backup Text is :- ' + backUpText);
-                    parsePage (urlFinal[0],backUpText);
+                    //parsePage (urlFinal[0],backUpText);
+                    speakResults(localeResponse[9] + backUpText + ". ALEXAPAUSE");
 
                 }
 			
@@ -465,5 +449,28 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 
 exports.handler = function(event, context) {
 	var AlexaGoogleSearchHelper = new AlexaGoogleSearch();
+    sessionLocale = event.request.locale;
+    console.log("handler locale is: "+ sessionLocale);
+    
+    if (sessionLocale == 'de-DE') {
+        localeResponse = localeResponseDE;
+        localeGoogle = localeGoogleDE;
+        console.log("Setting locale to de-DE");
+    }   
+    if (sessionLocale == 'en-GB') {
+        localeResponse = localeResponseEN;
+        localeGoogle = localeGoogleENGB; 
+        console.log("Setting locale to en-GB");
+    }
+        if (sessionLocale == 'en-US') {
+        localeResponse = localeResponseEN;
+        localeGoogle = localeGoogleENUS; 
+        console.log("Setting locale to en-US");
+    } else {
+        localeResponse = localeResponseEN;
+        localeGoogle = localeGoogleENUS; 
+        console.log("Locale not recognised - locale set to en-US");
+    }
+    
 	AlexaGoogleSearchHelper.execute(event, context);
 }
