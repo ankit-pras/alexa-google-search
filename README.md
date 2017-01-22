@@ -30,7 +30,7 @@ Whilst the skill will return weather forecasts, these will default to either Wes
 
 ## Upgrading from a previous version
 
-You can update to this version by uploading the new Archive.zip from github as per step 8 in the AWS Lambda setup instructions below (except hit "Save" rather than "Save and Test" once you have selected the Archive.zip file).
+You can update to this version by uploading the new Archive.zip from github as per step 8 in the AWS Lambda setup instructions below (except hit "Save" rather than "Save and Test" once you have selected the Archive.zip file). You will get a message saying - "The deployment package of your Lambda function "google" is too large to enable inline code editing. However, you can still invoke your function right now.". This is normal and the skill is ready to use.
 
 **If you get a "Cannot read property 'application' of undefined" error then you have hit the "Save and Test" file and you can either ignore this error or follow the steps in the Fault Finding section below**
 
