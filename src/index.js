@@ -457,7 +457,7 @@ exports.handler = function(event, context) {
         localeGoogle = localeGoogleENGB; 
         console.log("Setting locale to en-GB");
     }
-        if (sessionLocale == 'en-US') {
+    if (sessionLocale == 'en-US') {
         localeResponse = localeResponseEN;
         localeGoogle = localeGoogleENUS; 
         console.log("Setting locale to en-US");
