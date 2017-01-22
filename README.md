@@ -129,7 +129,7 @@ To run the skill you need to do three things:-
 20. Select no for Account Linking
 21. Click Next.
 22. You can test the skill by typing a query into the Service Simulator field or on your actual Alexa device. There is no need to go anyfurther through the process i.e. submitting for certification.
-23. **[optional - only do this step if you know what you are doing as it will cause more inssues than it solves if you get it wrong]** go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes).You will need to create a new zip file to upload. Open the src folder, delete Archive.zip and then select all the files in that folder (including the node_modules folder) and then create a new zip file called ARCHIVE.zip. **Make sure the zip file is not just the src directory itself**, otherwise Lambda function will not work.
+23. **[optional - only do this step if you know what you are doing as it will cause more issues than it solves if you get it wrong]** Go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes).You will need to create a new zip file to upload. Open the src folder, delete Archive.zip and then select all the files in that folder (including the node_modules folder) and then create a new zip file called ARCHIVE.zip. **Make sure the zip file is not just the src directory itself**, otherwise Lambda function will not work.
 
 The contents of the zip file should be as follows:
 
