@@ -461,11 +461,7 @@ exports.handler = function(event, context) {
         localeResponse = localeResponseEN;
         localeGoogle = localeGoogleENUS; 
         console.log("Setting locale to en-US");
-    } else {
-        localeResponse = localeResponseEN;
-        localeGoogle = localeGoogleENUS; 
-        console.log("Locale not recognised - locale set to en-US");
-    }
+    } 
     
 	AlexaGoogleSearchHelper.execute(event, context);
 }
