@@ -68,7 +68,7 @@ To run the skill you need to do three things:-
 7. Select the runtime as node.js 4.3
 9. Select Code entry type as "Upload a .ZIP file", Select Archive.zip in the src folder and click open. 
 10. Keep the Handler as index.handler (this refers to the main js file in the zip).
-11. Create a basic execution role and click create (or Choose use an existing role if you have deployed skills previously and then select "lambda_basic_executuion" from the existing role dropdown ).
+11. Create a basic execution role by slecting "Create new role from template(s)" in the Role box, then name the role "lambda_basic_execution” in the role name box and click create. (or Choose use an existing role if you have deployed skills previously and then select "lambda_basic_executuion" from the existing role dropdown ).
 12. Under Advanced settings change the Timeout to 10 seconds
 13. Click "Next" and review the settings then click "Create Function". This will upload the Archive.zip file to Lambda. **This may take a number of minutes depending on your connection speed**
 14. Copy the ARN from the top right to be used later in the Alexa Skill Setup (it's the text after ARN -). Hint - Paste it into notepad or similar
