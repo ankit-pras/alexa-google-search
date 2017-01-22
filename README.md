@@ -2,7 +2,7 @@
 
 A highly unofficial alexa skill for google search
 
-# Verison 1.5
+# Version 1.5
 
 This version fixes the following issues in the original code:-
 
