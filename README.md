@@ -80,7 +80,7 @@ To run the skill you need to do three things:-
 3. Click the "Add a New Skill" yellow box.
 4. You will now be on the "Skill Information" page. 
 5. Set "Custom Interaction Model" as the Skill type
-6. Select the language as English (US) or English (UK) depending on your location
+6. Select the language as English (US), English (UK), or German depending on your location
 7. Set "google" as the skill name and "google" as the invocation name, this is what is used to activate your skill. For example you would say: "Alexa, Ask google who is the queen of england."
 8. Leave the "Audio Player" setting to "No"
 9. Click Next.
