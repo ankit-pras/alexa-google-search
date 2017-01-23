@@ -2,13 +2,13 @@
 
 A highly unofficial alexa skill for google search
 
-# 2.0 beta 5.2 AMAZON ECHO UK USERS GROUP BUILD
+# 2.0 beta 5.3 AMAZON ECHO UK USERS GROUP BUILD
 
 # THIS IS AN UNSTABLE DEVELOPMENT BRANCH - PLEASE DO NOT INSTALL THIS VERSION UNLESS HAVE BEEN ASKED AS IT PROBABLY WON'T WORK! 
 
 This BETA version contains the following:-
 
-1. Support for Sports results (including live for beta 5.2)
+1. Support for Sports results (including live for beta 5.3)
 2. Back result incase an answer isn't found.
 
 ### THIS SKILL IS FOR PERSONAL USE ONLY AND IS NOT ENDORSED BY GOOGLE OR AMAZON - DO NOT SUBMIT THIS TO AMAZON FOR CERTIFICATION AS IT WON'T PASS!

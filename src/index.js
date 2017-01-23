@@ -259,55 +259,77 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             
 
 			// sports matches
-if (!found && $('._Fc',body).length>0){
+			if (!found && $('._Fc',body).length>0){
                 console.log("Found sports matches");
                 
                 // Deal with score
                 var result = $('._Fc>._Hg._tZc',body).html()
                 result = result.split('</td>').join(' ')
                 result = result.split('</div>').join(' ')
-                result = result.split(' - ').join('*DASH*')
                 result = entities.decode(striptags(result));
                 
-                result = result.split(/\bLive\*DASH\*[0-9]+\b/g).join('');
-                result = result.split('Final').join('');
-                
-                console.log("Result RAW is" + result)
-                
-                var scoreTotal = result.match(/[0-9]+\*DASH\*[0-9]+/g)+'';
-                console.log("ScoreTotal is: " + scoreTotal);
-                var scoreBreakdown = scoreTotal.split('*DASH*');
-                console.log("Score Breakdown is " + scoreBreakdown)
-                var scoreFirst = scoreBreakdown[0];
-                console.log ("First score is " + scoreFirst)
-                var scoreSecond = scoreBreakdown[1];
-                console.log ("FSecond score is " + scoreSecond)
-                var teams = result.split(/[0-9]+\*DASH\*[0-9]+/g);
-                console.log("Teams are: "+ teams)
-                var teamFirst = teams[0];
-                teamFirst = teamFirst.split(/\([0-9]+-[0-9]+\)/g).join('');
-                var teamSecond = teams[1];
-                teamSecond = teamSecond.split(/\([0-9]+-[0-9]+\)/g).join('');
-                
-                
-                
                 var eventTime = $('._Fc>._hg',body).eq(1).text()+'';
-                console.log("Event Time is " + eventTime)
-
-                
-                if (eventTime.includes("Live") == true ){
-                    result = result.split('Final').join('')
-                    found = "The current Live Score is:  " + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond 
+                    console.log("Event Time is " + eventTime)
                     
+                var isItFinal = result.includes( "Final ");
+                console.log(isItFinal)
+                
+                var isItLive = result.includes("Live ");
+                
+                console.log(isItLive)
+                
+                if ( isItFinal == true || isItLive == true){
+                    result = result.split(' - ').join('*DASH*')
+                    
+
+                    result = result.split(/\bLive\*DASH\*[0-9]+\b/g).join('');
+                    result = result.split('Final').join('');
+                    result = result.split('@').join(' vs. ');
+                    
+                    var eventTime = $('._Fc>._hg',body).eq(1).text()+'';
+                    console.log("Event Time is " + eventTime)
+
+                    console.log("Result RAW is" + result)
+                    
+                    found ="There was an error in process sports results"
+
+                    var scoreTotal = result.match(/[0-9]+\*DASH\*[0-9]+/g)+'';
+                    console.log("ScoreTotal is: " + scoreTotal);
+                    
+                    if (scoreTotal == null) {return}
+                    var scoreBreakdown = scoreTotal.split('*DASH*');
+                    if (scoreBreakdown == null) {return}
+                    console.log("Score Breakdown is " + scoreBreakdown)
+                    var scoreFirst = scoreBreakdown[0];
+                    console.log ("First score is " + scoreFirst)
+                    var scoreSecond = scoreBreakdown[1];
+                    console.log ("FSecond score is " + scoreSecond)
+                    var teams = result.split(/[0-9]+\*DASH\*[0-9]+/g);
+                    console.log("Teams are: "+ teams)
+                    var teamFirst = teams[0];
+                    teamFirst = teamFirst.split(/\([0-9]+-[0-9]+\)/g).join('');
+                    var teamSecond = teams[1];
+                    teamSecond = teamSecond.split(/\([0-9]+-[0-9]+\)/g).join('');
+
+                    if (eventTime.includes("Live") == true ){
+                        result = result.split('Final').join('')
+                        found = "The current Live Score is:  " + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond 
+
+                    } else {
+
+                        found = "The Final Score " + eventTime + " was: " + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond 
+
+                    }
+                
                 } else {
                     
-                    found = "The Final Score " + eventTime + " was: " + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond 
                     
+                    found = "The next match is " + result + ": " + eventTime
                 }
+                found = found.split('    ').join(' ') // Get rid of quad spaces
+                found = found.split('   ').join(' ') // Get rid of triple spaces
+                found = found.split('  ').join(' ') // get rid of double spaces
                 
-                
-                
-
             }
 		
 			//instant + description 1
