@@ -2,9 +2,14 @@
 
 A highly unofficial alexa skill for google search
 
-# AMAZON ECHO UK USERS GROUP BUILD
+# 2.0 beta 5 AMAZON ECHO UK USERS GROUP BUILD
 
 # THIS IS AN UNSTABLE DEVELOPMENT BRANCH - PLEASE DO NOT INSTALL THIS VERSION UNLESS HAVE BEEN ASKED AS IT PROBABLY WON'T WORK! 
+
+This BETA version contains the following:-
+
+1. Support for Sports results
+2. Back result incase an answer isn't found.
 
 ### THIS SKILL IS FOR PERSONAL USE ONLY AND IS NOT ENDORSED BY GOOGLE OR AMAZON - DO NOT SUBMIT THIS TO AMAZON FOR CERTIFICATION AS IT WON'T PASS!
 
@@ -22,6 +27,19 @@ Whilst the skill will return weather forecasts, these will default to either Wes
 
 
 ###  Note - this skill works as a screen reader by parsing the google results page and looking for the google answers boxes at the top of the results page. This may be against the google terms of service so you use it at your own risk. 
+
+
+## Upgrading from a previous version
+
+You can update to this version by uploading the new Archive.zip from github as per step 8 in the AWS Lambda setup instructions below (except hit "Save" rather than "Save and Test" once you have selected the Archive.zip file). You will get a message saying - "The deployment package of your Lambda function "google" is too large to enable inline code editing. However, you can still invoke your function right now.". This is normal and the skill is ready to use.
+
+**If you get a "Cannot read property 'application' of undefined" error then you have hit the "Save and Test" file and you can either ignore this error or follow the steps in the Fault Finding section below**
+
+NOTE - this is the same skill as that linked to by alexamods.com so you can over-write the older version if you followed the instructions there rather than on this page.
+
+
+
+
 
 
 
@@ -42,19 +60,19 @@ To run the skill you need to do three things:-
 
 ### AWS Lambda Setup
 
-1. Go to http://aws.amazon.com/lambda/ . You will need to set-up an AWS account if you don't have one already ** Make sure you use the same Amazon account that your Echo device is registered to**
+1. Go to http://aws.amazon.com/lambda/ . You will need to set-up an AWS account (the basic one will do fine) if you don't have one already ** Make sure you use the same Amazon account that your Echo device is registered to** Note - you will need a credit or debit card to set up an AWS account - there is no way around this. If you are just using this skill then you are highly unlikely to be charged unless you are making at least a million requests a month!
 2. Go to the AWS Console and click on the Lambda link. Go to the drop down "Location" menu and ensure you select US-East(N. Virginia) if you are based in the US or EU(Ireland) if you are based in the UK or Germany. This is important as only these two regions support Alexa. NOTE: the choice of either US or EU is important as it will affect the results that you get. The EU node will provide answers in metric and will be much more UK focused, whilst the US node will be imperial and more US focused.
 3. Click on the Create a Lambda Function or Get Started Now button.
 4. Skip the Select Blueprint Tab and just click on the "Configure Triggers" Option on the left hand side
 5. On the Cofigure Triggers tab Click the dotted box and select "Alexa Skills Kit". Click Next  
 6. Name the Lambda Function "google".
-7. Select the runtime as Node.js
-9. Select Code entry type as "Upload a .ZIP file", Select Archive.zip in the src folder and click open. 
+7. Select the runtime as node.js 4.3
+9. Select Code entry type as "Upload a .ZIP file". Go to the folder where you unzipped the files you downloaded from Github. Open the src folder, Select Archive.zip and click open.  **Do not upload the zip file you downloaded from github - only the archive.zip contained within it**
 10. Keep the Handler as index.handler (this refers to the main js file in the zip).
-11. Create a basic execution role and click create (or Choose use an existing role if you have deployed skills previously and then select "lambda_basic_executuion" from the existing role dropdown ).
+11. Create a basic execution role by slecting "Create new role from template(s)" in the Role box, then name the role "lambda_basic_execution” in the role name box and click create. (or Choose use an existing role if you have deployed skills previously and then select "lambda_basic_executuion" from the existing role dropdown ).
 12. Under Advanced settings change the Timeout to 10 seconds
 13. Click "Next" and review the settings then click "Create Function". This will upload the Archive.zip file to Lambda. **This may take a number of minutes depending on your connection speed**
-14. Copy the ARN from the top right to be used later in the Alexa Skill Setup (it's the text after ARN -). Hint - Paste it into notepad or similar
+14. Copy the ARN from the top right to be used later in the Alexa Skill Setup (it's the text after ARN - it won't be in bold and will look a bit like this arn:aws:lambda:eu-west-1:XXXXXXX:function:google). Hint - Paste it into notepad or similar
 
 ### Alexa Skill Setup
 
@@ -63,7 +81,7 @@ To run the skill you need to do three things:-
 3. Click the "Add a New Skill" yellow box.
 4. You will now be on the "Skill Information" page. 
 5. Set "Custom Interaction Model" as the Skill type
-6. Select the language as English (US) or English (UK) depending on your location
+6. Select the language as English (US), English (UK), or German depending on your location
 7. Set "google" as the skill name and "google" as the invocation name, this is what is used to activate your skill. For example you would say: "Alexa, Ask google who is the queen of england."
 8. Leave the "Audio Player" setting to "No"
 9. Click Next.
@@ -112,7 +130,7 @@ To run the skill you need to do three things:-
 20. Select no for Account Linking
 21. Click Next.
 22. You can test the skill by typing a query into the Service Simulator field or on your actual Alexa device. There is no need to go anyfurther through the process i.e. submitting for certification.
-23. **[optional]** go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes).You will need to create a new zip file to upload. Open the src folder, delete Archive.zip and then select all the files in that folder (including the node_modules folder) and then create a new zip file called ARCHIVE.zip. **Make sure the zip file is not just the src directory itself**, otherwise Lambda function will not work.
+23. **[optional - only do this step if you know what you are doing as it will cause more issues than it solves if you get it wrong]** Go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID (IMPORTANT make sure it is in quotes).You will need to create a new zip file to upload. Open the src folder, delete Archive.zip and then select all the files in that folder (including the node_modules folder) and then create a new zip file called ARCHIVE.zip. **Make sure the zip file is not just the src directory itself**, otherwise Lambda function will not work.
 
 The contents of the zip file should be as follows:
 

@@ -256,6 +256,15 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 				found = " "+$('._sPg',body).html();
 				console.log("Found facts 2");			
 			}
+            
+
+			// sports matches
+			if (!found && $('._Fc',body).length>0){
+                console.log("Found sports matches");
+                found = $('._Fc',body).html()
+                found = found.split('</div>').join('. ALEXAPAUSE')
+
+            }
 		
 			//instant + description 1
 			if (!found && $('._Oqb',body).length>0){
@@ -466,11 +475,7 @@ exports.handler = function(event, context) {
         localeResponse = localeResponseEN;
         localeGoogle = localeGoogleENUS; 
         console.log("Setting locale to en-US");
-    } else {
-        localeResponse = localeResponseEN;
-        localeGoogle = localeGoogleENUS; 
-        console.log("Locale not recognised - locale set to en-US");
-    }
+    } 
     
 	AlexaGoogleSearchHelper.execute(event, context);
 }

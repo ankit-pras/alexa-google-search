@@ -148,7 +148,7 @@ Response.prototype = (function () {
             };
         }
         var returnResult = {
-                version: '2.0 beta 4 AMAZON ECHO UK USERS GROUP BUILD',
+                version: '2.0 beta 5 AMAZON ECHO UK USERS GROUP BUILD',
                 response: alexaResponse
         };
         if (options.session && options.session.attributes) {
