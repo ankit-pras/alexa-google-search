@@ -261,8 +261,13 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 			// sports matches
 			if (!found && $('._Fc',body).length>0){
                 console.log("Found sports matches");
-                found = $('._Fc',body).html()
-                found = found.split('</div>').join('. ALEXAPAUSE')
+                found = $('._Fc',body).html();
+                found = found.split('</div>').join('. SHORTALEXAPAUSE');
+                found = entities.decode(striptags(found));
+                //console.log(found);
+                found = found.split('. SHORTALEXAPAUSE. SHORTALEXAPAUSEvs.. SHORTALEXAPAUSE. SHORTALEXAPAUSE').join(' vs. '); // deal with vs for most sports
+                found = found.split('. SHORTALEXAPAUSE. SHORTALEXAPAUSE . SHORTALEXAPAUSE@. SHORTALEXAPAUSE. SHORTALEXAPAUSE').join(' vs. ');// deal with @
+                found = found.split('. SHORTALEXAPAUSE. SHORTALEXAPAUSE').join('.');  
 
             }
 		
