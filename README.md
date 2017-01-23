@@ -28,6 +28,23 @@ Whilst the skill will return weather forecasts, these will default to either Wes
 ###  Note - this skill works as a screen reader by parsing the google results page and looking for the google answers boxes at the top of the results page. This may be against the google terms of service so you use it at your own risk. 
 
 
+#Installation Instructions.
+
+These are supplied further down this page and these are always upto date. There are common fault finding steps.
+
+## Video Guide to installation
+Paul Hibbert has produced a very good video guide demoing the skill and going through the setup process. If you follow his guide then you will need to ensure you select either N.Virginia or Europe(Ireland) lambda node, which isn't explicitly mentioned in his gude:-
+
+https://www.youtube.com/watch?v=PR-LVPMU7F4&feature=youtu.be
+
+##  Pictorial Guide to installation
+
+The Alexamods site has a pictorial guide for the basic installation, as well as for the process of upgrading to a newer version when they are available:-
+
+http://alexamods.com/guide-install-ask-google-alexa-skill/
+
+
+
 ## Upgrading from a previous version
 
 You can update to this version by uploading the new Archive.zip from github as per step 8 in the AWS Lambda setup instructions below (except hit "Save" rather than "Save and Test" once you have selected the Archive.zip file). You will get a message saying - "The deployment package of your Lambda function "google" is too large to enable inline code editing. However, you can still invoke your function right now.". This is normal and the skill is ready to use.
