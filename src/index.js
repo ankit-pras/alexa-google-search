@@ -259,15 +259,54 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             
 
 			// sports matches
-			if (!found && $('._Fc',body).length>0){
+if (!found && $('._Fc',body).length>0){
                 console.log("Found sports matches");
-                found = $('._Fc',body).html();
-                found = found.split('</div>').join('. SHORTALEXAPAUSE');
-                found = entities.decode(striptags(found));
-                //console.log(found);
-                found = found.split('. SHORTALEXAPAUSE. SHORTALEXAPAUSEvs.. SHORTALEXAPAUSE. SHORTALEXAPAUSE').join(' vs. '); // deal with vs for most sports
-                found = found.split('. SHORTALEXAPAUSE. SHORTALEXAPAUSE . SHORTALEXAPAUSE@. SHORTALEXAPAUSE. SHORTALEXAPAUSE').join(' vs. ');// deal with @
-                found = found.split('. SHORTALEXAPAUSE. SHORTALEXAPAUSE').join('.');  
+                
+                // Deal with score
+                var result = $('._Fc>._Hg._tZc',body).html()
+                result = result.split('</td>').join(' ')
+                result = result.split('</div>').join(' ')
+                result = result.split(' - ').join('*DASH*')
+                result = entities.decode(striptags(result));
+                
+                result = result.split(/\bLive\*DASH\*[0-9]+\b/g).join('');
+                result = result.split('Final').join('');
+                
+                console.log("Result RAW is" + result)
+                
+                var scoreTotal = result.match(/[0-9]+\*DASH\*[0-9]+/g)+'';
+                console.log("ScoreTotal is: " + scoreTotal);
+                var scoreBreakdown = scoreTotal.split('*DASH*');
+                console.log("Score Breakdown is " + scoreBreakdown)
+                var scoreFirst = scoreBreakdown[0];
+                console.log ("First score is " + scoreFirst)
+                var scoreSecond = scoreBreakdown[1];
+                console.log ("FSecond score is " + scoreSecond)
+                var teams = result.split(/[0-9]+\*DASH\*[0-9]+/g);
+                console.log("Teams are: "+ teams)
+                var teamFirst = teams[0];
+                teamFirst = teamFirst.split(/\([0-9]+-[0-9]+\)/g).join('');
+                var teamSecond = teams[1];
+                teamSecond = teamSecond.split(/\([0-9]+-[0-9]+\)/g).join('');
+                
+                
+                
+                var eventTime = $('._Fc>._hg',body).eq(1).text()+'';
+                console.log("Event Time is " + eventTime)
+
+                
+                if (eventTime.includes("Live") == true ){
+                    result = result.split('Final').join('')
+                    found = "The current Live Score is:  " + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond 
+                    
+                } else {
+                    
+                    found = "The Final Score " + eventTime + " was: " + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond 
+                    
+                }
+                
+                
+                
 
             }
 		
