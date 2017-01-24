@@ -267,6 +267,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                 result = result.split('</td>').join(' ')
                 result = result.split('</div>').join(' ')
                 result = entities.decode(striptags(result));
+                result = result.split(/\@/g).join(' vs. ');
                 
                 var eventTime = $('._Fc>._hg',body).eq(1).text()+'';
                     console.log("Event Time is " + eventTime)
@@ -278,15 +279,56 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                 
                 console.log(isItLive)
                 
+                var eventParamsNum = $('._Fc>._hg',body).length;
+                console.log("Number of elements is " +eventParamsNum);
+
+                var eventLeague = '';
+
+                var eventTime = '';
+
+                var eventVenue = '';
+
+                // Required form of response is 'The next match is Derby vs Leicester in the FA Cup Fourth Round, on Friday 27th Jan' 
+
+                if (eventParamsNum == 3) {
+                     console.log("3 parameters found");
+                    eventLeague = ' in the ' + $('._Fc>._hg',body).eq(0).text()+'';
+                    console.log("League is " + eventLeague);
+
+                    eventTime = $('._Fc>._hg',body).eq(1).text()+'';
+                    console.log("Time is " + eventTime);
+
+                    eventVenue = " at " + $('._Fc>._hg',body).eq(2).text()+'';
+                    console.log("Venue is " + eventVenue);
+
+
+                }
+
+                if (eventParamsNum == 2) {
+                    console.log("2 parameters found");
+                    eventLeague = '';
+                    console.log("League is " + eventLeague);
+
+                    eventTime = $('._Fc>._hg',body).eq(0).text()+'';
+                    console.log("Time is " + eventTime);
+
+                    eventVenue = " at " + $('._Fc>._hg',body).eq(1).text()+'';
+                    console.log("Venue is " + eventVenue);
+
+
+                }
+                
                 if ( isItFinal == true || isItLive == true){
                     result = result.split(' - ').join('*DASH*')
                     
 
                     result = result.split(/\bLive\*DASH\*[0-9]+\b/g).join('');
                     result = result.split('Final').join('');
-                    result = result.split('@').join(' vs. ');
                     
-                    var eventTime = $('._Fc>._hg',body).eq(1).text()+'';
+                    
+
+                    
+					
                     console.log("Event Time is " + eventTime)
 
                     console.log("Result RAW is" + result)
@@ -324,7 +366,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                 } else {
                     
                     
-                    found = "The next match is " + result + ": " + eventTime
+                    found = "The next game is " + result + eventLeague + " : " + eventTime + eventVenue
                 }
                 found = found.split('    ').join(' ') // Get rid of quad spaces
                 found = found.split('   ').join(' ') // Get rid of triple spaces
