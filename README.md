@@ -41,10 +41,12 @@ You can update to this version by uploading the new Archive.zip from github as p
 
 NOTE - this is the same skill as that linked to by alexamods.com so you can over-write the older version if you followed the instructions there rather than on this page.
 
+## Credits
 
+Thanks to:-
 
-
-
+https://github.com/porter707 for his cleanup of the original release and fixing the google search string
+Mark Porter on Facebook for suggestions on the Sports results processing and the code for currency conversion
 
 
 ## Setup
