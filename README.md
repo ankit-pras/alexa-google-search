@@ -2,14 +2,16 @@
 
 A highly unofficial alexa skill for google search
 
-# 2.0 beta 5.4 AMAZON ECHO UK USERS GROUP BUILD
+# 2.0 beta 5.5 AMAZON ECHO UK USERS GROUP BUILD
 
-# THIS IS AN UNSTABLE DEVELOPMENT BRANCH - PLEASE DO NOT INSTALL THIS VERSION UNLESS HAVE BEEN ASKED AS IT PROBABLY WON'T WORK! 
+# THIS IS AN UNSTABLE DEVELOPMENT BRANCH - PLEASE DO NOT INSTALL THIS VERSION UNLESS HAVE BEEN ASKED TO AS IT IS WORK IN PROGRESS! 
 
 This BETA version contains the following:-
 
-1. Support for Sports results (including live for beta 5.3)
-2. Back result incase an answer isn't found.
+1. Processing speed improvements.
+2. Support for currency conversion. (thanks to Mark Riley for this contribution)
+3. Support for Sports results including live and historic events. This covers leagues (such as the UK Championship) that Alexa can't handle natively. Should also handle Baseball and American football althought his hasn't been tested extensively.
+4. Removed back-up result system from previous beta's as this wasn't that useful.
 
 ### THIS SKILL IS FOR PERSONAL USE ONLY AND IS NOT ENDORSED BY GOOGLE OR AMAZON - DO NOT SUBMIT THIS TO AMAZON FOR CERTIFICATION AS IT WON'T PASS!
 
@@ -26,14 +28,14 @@ I have wrapped this module so that it can be utilised as an Alexa skill - if you
 Whilst the skill will return weather forecasts, these will default to either West virginia or Dublin, Ireland (based upon which lambda node you are hosting your skill on) unless you add a location to the search command.
 
 
-###  Note - this skill works as a screen reader by parsing the google results page and looking for the google answers boxes at the top of the results page. This may be against the google terms of service so you use it at your own risk. 
+###  Note - this skill works as a screen reader by parsing the google results page and looking for the google answers boxes at the top of the results page. This may be against the google terms of service so you use it at your own risk.
 
 
 ## Upgrading from a previous version
 
 You can update to this version by uploading the new Archive.zip from github as per step 8 in the AWS Lambda setup instructions below (except hit "Save" rather than "Save and Test" once you have selected the Archive.zip file). You will get a message saying - "The deployment package of your Lambda function "google" is too large to enable inline code editing. However, you can still invoke your function right now.". This is normal and the skill is ready to use.
 
-**If you get a "Cannot read property 'application' of undefined" error then you have hit the "Save and Test" file and you can either ignore this error or follow the steps in the Fault Finding section below**
+**If you get a "Cannot read property 'application' of undefined" error then you have hit the "Save and Test" file and you can either ignore this error and carry on or follow the steps in the Fault Finding section below**
 
 NOTE - this is the same skill as that linked to by alexamods.com so you can over-write the older version if you followed the instructions there rather than on this page.
 
