@@ -2,7 +2,7 @@
 
 A highly unofficial alexa skill for google search
 
-# 2.0 beta 5.5 AMAZON ECHO UK USERS GROUP BUILD
+# 2.0 beta 6 AMAZON ECHO UK USERS GROUP BUILD
 
 # THIS IS AN UNSTABLE DEVELOPMENT BRANCH - PLEASE DO NOT INSTALL THIS VERSION UNLESS HAVE BEEN ASKED TO AS IT IS WORK IN PROGRESS! 
 
@@ -12,6 +12,8 @@ This BETA version contains the following:-
 2. Support for currency conversion. (thanks to Mark Riley for this contribution)
 3. Support for Sports results including live and historic events. This covers leagues (such as the UK Championship) that Alexa can't handle natively. Should also handle Baseball and American football althought his hasn't been tested extensively.
 4. Removed back-up result system from previous beta's as this wasn't that useful.
+5. Better handing of list results.
+6. Btter formatting of results in Alexa app
 
 ### THIS SKILL IS FOR PERSONAL USE ONLY AND IS NOT ENDORSED BY GOOGLE OR AMAZON - DO NOT SUBMIT THIS TO AMAZON FOR CERTIFICATION AS IT WON'T PASS!
 

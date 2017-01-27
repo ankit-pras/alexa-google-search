@@ -114,7 +114,18 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             
             // strip out html tags to leave just text
 			var speechOutputTemp = entities.decode(striptags(speechText)); // Remove html tags
+            
+                        // Remove whitespace
+            
+            speechOutputTemp = speechOutputTemp.replace(/    /g, ' '); // replace quad spaces 
+            speechOutputTemp = speechOutputTemp.replace(/   /g, ' '); // replace triple spaces 
+            speechOutputTemp = speechOutputTemp.replace(/  /g, ' '); // replace double spaces 
+
+            
+            // Create card text
 			var cardOutputText = speechOutputTemp;
+            cardOutputText = cardOutputText.replace(/SHORTALEXAPAUSE/g, ''); // remove pauses from card text
+            cardOutputText = cardOutputText.replace(/ALEXAPAUSE/g, '\r\n'); // remove pauses from card text and add carriage return
             
 			// make sure all full stops have space after them otherwise alexa says the word dot 
             
@@ -125,7 +136,9 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             speechOutputTemp = speechOutputTemp.replace(/\.org/g, (" " + localeResponse[4] + " org ")); // deal with .org
             speechOutputTemp = speechOutputTemp.replace(/\.org/g, (" " + localeResponse[4] + " de ")); // deal with .de
             speechOutputTemp = speechOutputTemp.replace(/\a\.m/g, "am"); // deal with a.m
-            speechOutputTemp = speechOutputTemp.replace(/\p\.m/g, "pm"); // deal with a.m
+            speechOutputTemp = speechOutputTemp.replace(/\p\.m/g, "pm"); // deal with p.m
+            speechOutputTemp = speechOutputTemp.replace(/\U\.S/g, "US"); // deal with US
+            
 
               // deal with decimal places
             speechOutputTemp = speechOutputTemp.replace(/\d[\.]{1,}/g, '\$&DECIMALPOINT'); // search for decimal points following a digit and add DECIMALPOINT TEXT
@@ -135,13 +148,12 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             speechOutputTemp = speechOutputTemp.replace(/&/g, localeResponse[5]); // replace ampersands 
             speechOutputTemp = speechOutputTemp.replace(/</g, localeResponse[6]); // replace < symbol 
             speechOutputTemp = speechOutputTemp.replace(/""/g, ''); // replace double quotes 
+
+            
             
             // Add in SSML pauses
-            speechOutputTemp = speechOutputTemp.replace('SHORTALEXAPAUSE', '<break time=\"250ms\"/>'); // add in SSML pauses at table ends      
-            speechOutputTemp = speechOutputTemp.replace('ALEXAPAUSE', '<break time=\"500ms\"/>'); // add in SSML pauses at table ends 
-            cardOutputText = cardOutputText.replace('SHORTALEXAPAUSE', ''); // remove pauses from card text
-            cardOutputText = cardOutputText.replace('ALEXAPAUSE', '\r\n'); // remove pauses from card text and add carriage return
-
+            speechOutputTemp = speechOutputTemp.replace(/SHORTALEXAPAUSE/g, '<break time=\"250ms\"/>'); // add in SSML pauses at table ends      
+            speechOutputTemp = speechOutputTemp.replace(/ALEXAPAUSE/g, '<break time=\"500ms\"/>'); // add in SSML pauses at table ends 
 			speechOutputTemp = speechOutputTemp.replace(/\./g, ". "); // Assume any remaining dot are concatonated sentances so turn them into full stops with a pause afterwards
 			var speechOutput = speechOutputTemp.replace(/DECIMALPOINT/g, '.'); //Put back decimal points
             
@@ -354,74 +366,83 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                 if (!found && $('._o0d',body).length>0){
 
                     console.log("Found Found instant and desc 2")
-                    var tablehtml = $('._o0d',body).html()
 
-                    found = tablehtml // fallback in case a table isn't found
+                    
+                    if ($('._cmh',body).length>0) { // check for a table
+                        
+                        var tablehtml = $('._o0d',body).html()
 
-                    xray(tablehtml, ['table@html'])(function (conversionError, tableHtmlList) {
+                        xray(tablehtml, ['table@html'])(function (conversionError, tableHtmlList) {
 
-                    if (tableHtmlList){
+                        if (tableHtmlList){
 
-                        // xray returns the html inside each table tag, and cherriotableparser
-                        // expects needs a valid html table so we need to add table tags
-                        var $table2 = cheerio.load('<table>' + tableHtmlList[0]+ '</table>');
+                            // xray returns the html inside each table tag, and cherriotableparser
+                            // expects needs a valid html table so we need to add table tags
+                            var $table2 = cheerio.load('<table>' + tableHtmlList[0]+ '</table>');
 
-                        cheerioTableparser($table2);
-                        var headerStart = 0;
-                        var data2 = $table2("table").parsetable(false, false, true);
+                            cheerioTableparser($table2);
+                            var headerStart = 0;
+                            var data2 = $table2("table").parsetable(false, false, true);
 
-                        var tableWidth = data2.length;
-                        var tableHeight = data2[0].length;
-                        console.log("Height " + tableHeight);
-                        console.log("Width " + tableWidth);
+                            var tableWidth = data2.length;
+                            var tableHeight = data2[0].length;
+                            console.log("Height " + tableHeight);
+                            console.log("Width " + tableWidth);
 
-                        var blankFound = 0;
-                        var headerText ='';
+                            var blankFound = 0;
+                            var headerText ='';
 
-                        for (var l = 0; l < tableWidth; l++) { 
-                        console.log('Table Data @@@@@' + data2[l]+ '@@@@');
-                        }
-
-                        // Look to see whether header row has blank cells in it. 
-                        // If it does then the headers are titles can't be used so we use first row of table as headers instead
-
-                        for (var i = 0; i < tableWidth; i++) { 
-                            console.log(data2[i][0]);
-
-                                if (data2[i][0] == "") {
-                                    blankFound++;
-                                } else {
-                                    headerText += (data2[i][0]) + '. SHORTALEXAPAUSE';
-                                }
-                        }
-                        console.log ("Number of blank cells : " + blankFound)
-                        found = localeResponse[3] + ' ALEXAPAUSE ';
-                        if (blankFound != 0){
-                            headerStart = 1;
-                            //found += headerText +' ALEXAPAUSE ';
-                        }
-
-                        // Parse table from header row onwards
-                        for (var x = headerStart ; x < tableHeight; x++) { 
-
-                            for (var y = 0; y < tableWidth; y++) { 
-                            found += ( data2[y][x] +', SHORTALEXAPAUSE');
+                            for (var l = 0; l < tableWidth; l++) { 
+                            console.log('Table Data @@@@@' + data2[l]+ '@@@@');
                             }
 
-                            found += ('ALEXAPAUSE');
+                            // Look to see whether header row has blank cells in it. 
+                            // If it does then the headers are titles can't be used so we use first row of table as headers instead
+
+                            for (var i = 0; i < tableWidth; i++) { 
+                                console.log(data2[i][0]);
+
+                                    if (data2[i][0] == "") {
+                                        blankFound++;
+                                    } else {
+                                        headerText += (data2[i][0]) + '. SHORTALEXAPAUSE';
+                                    }
+                            }
+                            console.log ("Number of blank cells : " + blankFound)
+                            found = localeResponse[3] + ' ALEXAPAUSE ';
+                            if (blankFound != 0){
+                                headerStart = 1;
+                                //found += headerText +' ALEXAPAUSE ';
+                            }
+
+                            // Parse table from header row onwards
+                            for (var x = headerStart ; x < tableHeight; x++) { 
+
+                                for (var y = 0; y < tableWidth; y++) { 
+                                found += ( data2[y][x] +', SHORTALEXAPAUSE');
+                                }
+
+                                found += ('ALEXAPAUSE');
+                                found = found.replace(/, SHORTALEXAPAUSEALEXAPAUSE/g, '. ALEXAPAUSE') //Tidy up ends of table rows
+                            }
+
+                            console.log('Found :' + found)
                         }
 
-                        console.log('Found :' + found)
+                        if (conversionError){
+                            console.log("There was a conversion error: " + conversionError); // This will cause fallback to be used
+                            found = tablehtml // fallback in case a table isn't found
+                        }
+
+
+
+                      });
+                    } else {
+                        
+                        found = $('._o0d',body).html();
+                        found = found.replace(/<\/li>/g, 'ALEXAPAUSE'); // Find end of lines
+   
                     }
-
-                    if (conversionError){
-                        console.log("There was a conversion error: " + conversionError); // This will cause fallback to be used
-                        found = tablehtml // fallback in case a table isn't found
-                    }
-
-
-
-                  });
 
                     speakResults(found);
 
