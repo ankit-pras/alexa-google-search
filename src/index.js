@@ -28,7 +28,7 @@ var localeResponseEN = [
     ' in the ',
     " at ",
     "The current Live Score is:  ",
-    "The Final Score ",
+    "The Final Score, ",
     " was: ",
     "The next game is "
     
@@ -49,7 +49,7 @@ var localeResponseDE = [
     " in dem ",
     " ein ",
     "Der aktuelle Live Score ist:",
-    "Das Finale Ergebnis ",
+    "Das Finale Ergebnis, ",
     " war: ",
     "Das nächste Spiel ist "
      
@@ -203,7 +203,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 			.then(function(body) {
 				console.log("Running parsing");
 				console.log("Search string is:" + queryString);
-				console.log("HTML is:" + $('#ires', body).html());
+				//console.log("HTML is:" + $('#ires', body).html());
 								
 			// result variable init
                 var found = 0;
@@ -256,13 +256,13 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                     result = result.split(/\@/g).join(' vs. '); // replace @ with vs.
 
                     var eventTime = $('._Fc>._hg',body).eq(1).text()+'';
-                    console.log("Event Time is " + eventTime)
+                    //console.log("Event Time is " + eventTime)
 
                     var isItFinal = (result.includes( "Final ") || result.includes( "Finale ")) ;  // Check whether this is the final result in English or German               
                     var isItLive = result.includes("Live "); // Check whether this is a live event
 
                     var eventParamsNum = $('._Fc>._hg',body).length; // check for number of _hg elements that contain information aboutthe game
-                    console.log("Number of elements is " +eventParamsNum);
+                    //console.log("Number of elements is " +eventParamsNum);
                     var eventLeague = '';
                     var eventTime = '';
                     var eventVenue = '';
@@ -270,23 +270,23 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                     // Required form of response is 'The next match is Derby vs Leicester in the FA Cup Fourth Round, on Friday 27th Jan' 
 
                     if (eventParamsNum == 3) {
-                         console.log("3 parameters found");
+                        //console.log("3 parameters found");
                         eventLeague = localeResponse[10] + $('._Fc>._hg',body).eq(0).text()+''; // Get league
-                        console.log("League is " + eventLeague);
+                        //console.log("League is " + eventLeague);
                         eventTime = $('._Fc>._hg',body).eq(1).text()+''; // Get Time
-                        console.log("Time is " + eventTime);
+                        //console.log("Time is " + eventTime);
                         eventVenue = localeResponse[11] + $('._Fc>._hg',body).eq(2).text()+'';  // Get venue
-                        console.log("Venue is " + eventVenue);
+                        //console.log("Venue is " + eventVenue);
                     }
 
                     if (eventParamsNum == 2) {
-                        console.log("2 parameters found");
+                        //console.log("2 parameters found");
                         eventLeague = '';
                         console.log(localeResponse[10] + eventLeague);
                         eventTime = $('._Fc>._hg',body).eq(0).text()+''; //Get Time
-                        console.log("Time is " + eventTime);
+                        //console.log("Time is " + eventTime);
                         eventVenue = localeResponse[11] + $('._Fc>._hg',body).eq(1).text()+''; //Get venue
-                        console.log("Venue is " + eventVenue);
+                        //console.log("Venue is " + eventVenue);
                     }
 
                     // If it is a request for a past or present score
@@ -295,43 +295,41 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                         result = result.split(' - ').join('*DASH*')// convert dashes to make them easier to deal with using regex
                         result = result.split(/\bLive\*DASH\*[0-9]+\b/g).join(''); // Deal with Live scores
                         result = result.split('Final').join(''); // Remove final word
-                        console.log("Event Time is " + eventTime)
-                        console.log("Result RAW is" + result)
+                        //console.log("Event Time is " + eventTime)
+                        //console.log("Result RAW is" + result)
 
                         found =localeResponse[8];
 
                         var scoreTotal = result.match(/[0-9]+\*DASH\*[0-9]+/g)+''; // Find score element
-                        console.log("ScoreTotal is: " + scoreTotal);
+                        //console.log("ScoreTotal is: " + scoreTotal);
 
                         if (scoreTotal == null) {return}
                         var scoreBreakdown = scoreTotal.split('*DASH*'); // split score into two halves
                         if (scoreBreakdown == null) {return}
-                        console.log("Score Breakdown is " + scoreBreakdown)
+                        //console.log("Score Breakdown is " + scoreBreakdown)
                         var scoreFirst = scoreBreakdown[0]; // Take first half as team 1's score
-                        console.log ("First score is " + scoreFirst)
+                        //console.log ("First score is " + scoreFirst)
                         var scoreSecond = scoreBreakdown[1]; // Take second half as team 2's score
-                        console.log ("FSecond score is " + scoreSecond)
+                        //console.log ("FSecond score is " + scoreSecond)
                         var teams = result.split(/[0-9]+\*DASH\*[0-9]+/g); 
-                        console.log("Teams are: "+ teams)
+                        //console.log("Teams are: "+ teams)
                         var teamFirst = teams[0];
                         teamFirst = teamFirst.split(/\([0-9]+-[0-9]+\)/g).join(''); // get rid of any other information in brackets in team names
                         var teamSecond = teams[1];
                         teamSecond = teamSecond.split(/\([0-9]+-[0-9]+\)/g).join(''); // get rid of any other information in brackets in team names
 
                         if (eventTime.includes("Live") == true ){
-                            result = result.split('Final').join('')
-                            found = localeResponse[12] + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond 
+                            result = result.split('Final').join('');
+                            found = localeResponse[12] + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond ;
 
                         } else {
-                           found = localeResponse[13] + eventTime + localeResponse[14] + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond 
+                           found = localeResponse[13] + eventTime + localeResponse[14] + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond ;
                         }               
                     } else {
 
-                        found = localeResponse[14] + result + eventLeague + " : " + eventTime + eventVenue
+                        found = localeResponse[15] + result + eventLeague + " : " + eventTime + eventVenue ;
                     }
 
-                    found = found.replace('  ', ' ') // get rid of double spaces
-                    found = found.replace('  ', ' ') // repeat again to get rid of any remaining
 
                     speakResults(found);
 
