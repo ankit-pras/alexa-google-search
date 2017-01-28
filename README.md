@@ -45,8 +45,8 @@ NOTE - this is the same skill as that linked to by alexamods.com so you can over
 
 Thanks to:-
 
-https://github.com/porter707 for his cleanup of the original release and fixing the google search string
-Mark Porter on Facebook for suggestions on the Sports results processing and the code for currency conversion
+1. Ashley Porter https://github.com/porter707 for his cleanup of the original release and fixing the google search string.
+2. Mark Porter on Facebook for suggestions on the Sports results processing and the code for currency conversion
 
 
 ## Setup

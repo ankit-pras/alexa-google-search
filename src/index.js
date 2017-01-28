@@ -27,7 +27,7 @@ var localeResponseEN = [
     'I could not find an exact answer. Here is my best guess: ',
     ' in the ',
     " at ",
-    "The current Live Score is:  ",
+    "The current Score is:  ",
     "The Final Score, ",
     " was: ",
     "The next game is "
@@ -124,8 +124,10 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             
             // Create card text
 			var cardOutputText = speechOutputTemp;
+            cardOutputText = cardOutputText.replace(/SHORTALEXAPAUSERTN/g, '\n'); // remove pauses from card text and add carriage return
             cardOutputText = cardOutputText.replace(/SHORTALEXAPAUSE/g, ''); // remove pauses from card text
             cardOutputText = cardOutputText.replace(/ALEXAPAUSE/g, '\r\n'); // remove pauses from card text and add carriage return
+
             
 			// make sure all full stops have space after them otherwise alexa says the word dot 
             
@@ -152,7 +154,8 @@ AlexaGoogleSearch.prototype.intentHandlers = {
             
             
             // Add in SSML pauses
-            speechOutputTemp = speechOutputTemp.replace(/SHORTALEXAPAUSE/g, '<break time=\"250ms\"/>'); // add in SSML pauses at table ends      
+            speechOutputTemp = speechOutputTemp.replace(/SHORTALEXAPAUSERTN/g, '<break time=\"250ms\"/>'); // add in SSML pauses at table ends 
+            speechOutputTemp = speechOutputTemp.replace(/SHORTALEXAPAUSE/g, '<break time=\"250ms\"/>'); // add in SSML pauses at table ends
             speechOutputTemp = speechOutputTemp.replace(/ALEXAPAUSE/g, '<break time=\"500ms\"/>'); // add in SSML pauses at table ends 
 			speechOutputTemp = speechOutputTemp.replace(/\./g, ". "); // Assume any remaining dot are concatonated sentances so turn them into full stops with a pause afterwards
 			var speechOutput = speechOutputTemp.replace(/DECIMALPOINT/g, '.'); //Put back decimal points
@@ -197,7 +200,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
         ];
         
         var sel = Math.floor((Math.random() * 5));
-		var userAgentRandom = userAgent[sel]; // Select a random user agent - this might help against goole thik we are a bot
+		var userAgentRandom = userAgent[sel]; // Select a random user agent - this MIGHT help against google thinking we are a bot
         
         console.log("User Agent: - " + userAgentRandom);
         
@@ -215,7 +218,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 			.then(function(body) {
 				console.log("Running parsing");
 				console.log("Search string is:" + queryString);
-				//console.log("HTML is:" + $('#ires', body).html());
+				console.log("HTML is:" + $('#ires', body).html());
 								
 			// result variable init
                 var found = 0;
@@ -233,7 +236,28 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                             found = found + $('._m3b',body).eq(count).html() + ", ";
                         }
                     }
+                    found = found.replace(/<\/span>/g, 'ALEXAPAUSE'); // Find end of lines
 
+                    speakResults(found);
+                }
+            
+                //name list
+                if (!found && $('#_vBb',body).length>0){
+                    console.log("Found name list");
+                    found = $('._H0d',body).html() + "ALEXAPAUSE"; // Get subject of list
+                    
+                    var items = $('._G0d',body).get().length; // find how many lines there are in name list
+
+                    if (items) {
+                        console.log( items + " names found");
+
+                        for (var count = 0; count < items; count++) {	
+
+                            found = found + $('._G0d',body).eq(count).text() + 'SHORTALEXAPAUSERTN';
+                        }
+                    }
+                    found = found.replace(/SHORTALEXAPAUSERTN,/g, ', SHORTALEXAPAUSERTN'); // Deal with commas at end of lines
+                    
                     speakResults(found);
                 }
 
@@ -244,6 +268,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
 
                     found = $('._tXc>span',body).html();
                     console.log("Found facts 1");
+                    found = found.replace(/<\/span>/g, 'ALEXAPAUSE'); // Find end of lines
                     speakResults(found);
                 }
 
@@ -268,13 +293,13 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                     result = result.split(/\@/g).join(' vs. '); // replace @ with vs.
 
                     var eventTime = $('._Fc>._hg',body).eq(1).text()+'';
-                    //console.log("Event Time is " + eventTime)
-
+                    console.log("Event Time is " + eventTime)
+                    
                     var isItFinal = (result.includes( "Final ") || result.includes( "Finale ")) ;  // Check whether this is the final result in English or German               
                     var isItLive = result.includes("Live "); // Check whether this is a live event
 
                     var eventParamsNum = $('._Fc>._hg',body).length; // check for number of _hg elements that contain information aboutthe game
-                    //console.log("Number of elements is " +eventParamsNum);
+                    console.log("Number of elements is " +eventParamsNum);
                     var eventLeague = '';
                     var eventTime = '';
                     var eventVenue = '';
@@ -284,26 +309,47 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                     if (eventParamsNum == 3) {
                         //console.log("3 parameters found");
                         eventLeague = localeResponse[10] + $('._Fc>._hg',body).eq(0).text()+''; // Get league
-                        //console.log("League is " + eventLeague);
+                        console.log("League is " + eventLeague);
                         eventTime = $('._Fc>._hg',body).eq(1).text()+''; // Get Time
-                        //console.log("Time is " + eventTime);
+                        console.log("Time is " + eventTime);
                         eventVenue = localeResponse[11] + $('._Fc>._hg',body).eq(2).text()+'';  // Get venue
-                        //console.log("Venue is " + eventVenue);
+                        console.log("Venue is " + eventVenue);
                     }
 
                     if (eventParamsNum == 2) {
-                        //console.log("2 parameters found");
+                        console.log("2 parameters found");
                         eventLeague = '';
                         console.log(localeResponse[10] + eventLeague);
                         eventTime = $('._Fc>._hg',body).eq(0).text()+''; //Get Time
-                        //console.log("Time is " + eventTime);
+                        console.log("Time is " + eventTime);
                         eventVenue = localeResponse[11] + $('._Fc>._hg',body).eq(1).text()+''; //Get venue
-                        //console.log("Venue is " + eventVenue);
+                        console.log("Venue is " + eventVenue);
                     }
+                    
+                    if (result.includes( "vs.")) {
+                        
+                        
+                        
+                        // this rule looks for a cricket match
+                        
+                        if (isItLive === true) { //likely to be a cricket match
+                            
+                            found = "Cricket Match :" + result + eventLeague + " : " + eventTime + eventVenue ;
+                        // more handling to be added for cricket
+                        
+                        } else { 
+                            
+                        // for football and most other sports assume this is a future match
+                        found = localeResponse[15] + result + eventLeague + " : " + eventTime + eventVenue ; 
+                        }
+                        
 
-                    // If it is a request for a past or present score
+                        
+                    } else {
 
-                    if (isItFinal == true || isItLive == true){       
+                        // If it is a request for a past or present score
+
+                              
                         result = result.split(' - ').join('*DASH*')// convert dashes to make them easier to deal with using regex
                         result = result.split(/\bLive\*DASH\*[0-9]+\b/g).join(''); // Deal with Live scores
                         result = result.split('Final').join(''); // Remove final word
@@ -330,16 +376,18 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                         var teamSecond = teams[1];
                         teamSecond = teamSecond.split(/\([0-9]+-[0-9]+\)/g).join(''); // get rid of any other information in brackets in team names
 
-                        if (eventTime.includes("Live") == true ){
-                            result = result.split('Final').join('');
-                            found = localeResponse[12] + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond ;
+                        if (isItFinal == true ){
+                            
+                            found = localeResponse[13] + eventTime + localeResponse[14] + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond ;
+
 
                         } else {
-                           found = localeResponse[13] + eventTime + localeResponse[14] + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond ;
+                            
+                            //result = result.split('Final').join('');
+                            found = localeResponse[12] + teamFirst + " " +scoreFirst +", " + teamSecond + " "+ scoreSecond ;
+                           
                         }               
-                    } else {
-
-                        found = localeResponse[15] + result + eventLeague + " : " + eventTime + eventVenue ;
+                        
                     }
 
 
@@ -526,13 +574,7 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                     speakResults(found);
                 }
             
-                //name list
-                if (!found && $('#_vBb',body).length>0){
 
-                    found = $('#_vBb',body).html();
-                    console.log("Found name list");
-                    speakResults(found);
-                }
             
                 //Time, Date
                 if (!found && $('._rkc._Peb',body).length>0){
