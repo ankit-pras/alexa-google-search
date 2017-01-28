@@ -291,6 +291,8 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                     result = result.split('</div>').join(' '); // find end of div element tags and replace with spaces 
                     result = entities.decode(striptags(result)); // get text from remain elements
                     result = result.split(/\@/g).join(' vs. '); // replace @ with vs.
+                    
+                    console.log ("Result is " + result);
 
                     var eventTime = $('._Fc>._hg',body).eq(1).text()+'';
                     console.log("Event Time is " + eventTime)
@@ -353,24 +355,24 @@ AlexaGoogleSearch.prototype.intentHandlers = {
                         result = result.split(' - ').join('*DASH*')// convert dashes to make them easier to deal with using regex
                         result = result.split(/\bLive\*DASH\*[0-9]+\b/g).join(''); // Deal with Live scores
                         result = result.split('Final').join(''); // Remove final word
-                        //console.log("Event Time is " + eventTime)
-                        //console.log("Result RAW is" + result)
+                        console.log("Event Time is " + eventTime)
+                        console.log("Result RAW is" + result)
 
                         found =localeResponse[8];
 
                         var scoreTotal = result.match(/[0-9]+\*DASH\*[0-9]+/g)+''; // Find score element
-                        //console.log("ScoreTotal is: " + scoreTotal);
+                        console.log("ScoreTotal is: " + scoreTotal);
 
                         if (scoreTotal == null) {return}
                         var scoreBreakdown = scoreTotal.split('*DASH*'); // split score into two halves
                         if (scoreBreakdown == null) {return}
-                        //console.log("Score Breakdown is " + scoreBreakdown)
+                        console.log("Score Breakdown is " + scoreBreakdown)
                         var scoreFirst = scoreBreakdown[0]; // Take first half as team 1's score
-                        //console.log ("First score is " + scoreFirst)
+                        console.log ("First score is " + scoreFirst)
                         var scoreSecond = scoreBreakdown[1]; // Take second half as team 2's score
-                        //console.log ("FSecond score is " + scoreSecond)
+                        console.log ("FSecond score is " + scoreSecond)
                         var teams = result.split(/[0-9]+\*DASH\*[0-9]+/g); 
-                        //console.log("Teams are: "+ teams)
+                        console.log("Teams are: "+ teams)
                         var teamFirst = teams[0];
                         teamFirst = teamFirst.split(/\([0-9]+-[0-9]+\)/g).join(''); // get rid of any other information in brackets in team names
                         var teamSecond = teams[1];
